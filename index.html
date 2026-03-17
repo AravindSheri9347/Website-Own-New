@@ -3,19 +3,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
+    <title>Login page</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="login-container">
-        <form>
-            <h1>Login</h1>
-            <input type="text" placeholder="User name" required>
-            <input type="password" placeholder="Password" required>
-            <button type="submit" class="signup-button">Sign in</button>
-            <a href="#" class="create-account">Create Account</a>
-        </form>
+        <h1>Login</h1>
+        <input type="text" id="user name" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="checkLogin()">Login</button>
+        <p id="message"></p>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>
