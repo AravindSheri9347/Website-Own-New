@@ -4,3 +4,7 @@ body {
     padding: 0;
     background-color: lightblue;
 }
+h1 {
+  text-align: center;
+  color: black;\n  font-weight: bold;
+}
