@@ -1,21 +1,56 @@
+/* style.css */
 body {
     background-color: lightblue;
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    background-color: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
 h1 {
-  background: linear-gradient(to right, #000 20%, #fff 40%, #fff 60%, #000 80%);
-  background-size: 200% auto;
-  color: #000;
-  background-clip: text;
-  -webkit-background-clip: text;
-  animation: shine 2s linear infinite;
+    margin-bottom: 20px;
+    color: black;
 }
 
-@keyframes shine {
-  to {
-    background-position: 200% center;
-  }
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* padding తో కలిపి width సరిగ్గా ఉండటానికి */
+}
+
+.signup-button {
+    width: 100%;
+    padding: 12px;
+    background-color: green;
+    color: black;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.signup-button:hover {
+    background-color: darkgreen; /* మౌస్ పెట్టినప్పుడు కలర్ మార్పు */
+}
+
+.create-account {
+    display: block;
+    margin-top: 20px;
+    color: blue;
+    text-decoration: none;
+    font-size: 14px;
 }
