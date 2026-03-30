@@ -7,7 +7,7 @@ body {
 }
 
 .login-container {
-    background-color: lightblue;
+    background-color: yellow;
     padding: 40px;
     border-radius: 10px;
     text-align: center;
@@ -23,7 +23,7 @@ input {
 .login-btn {
     width: 100%;
     padding: 12px;
-    background-color: lightblue;   /* 🔵 Blue background */
+    background-color: green;   /* 🔵 Blue background */
     color: white;             /* ⚪ White text */
     border: none;
     border-radius: 5px;
