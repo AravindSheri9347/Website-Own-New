@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="login-container">
+    <h1>Reset Password</h1>
+
+    <!-- Username auto fill -->
+    <input type="text" id="fpUser" readonly>
+
+    <input type="password" id="newPass" placeholder="New Password">
+    <input type="password" id="confirmPass" placeholder="Confirm Password">
+
+    <button class="register-btn" onclick="resetPassword()">Update Password</button>
+
+    <p id="fpMessage"></p>
+</div>
+
+<script src="script.js"></script>
+<script>
+    // Auto fill username
+    document.getElementById("fpUser").value = localStorage.getItem("tempUser");
+</script>
+
+</body>
+</html>
