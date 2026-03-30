@@ -2,30 +2,47 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    
+    <!-- Responsive -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>Forgot Password</title>
+    
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <div class="login-container">
     <h1>Reset Password</h1>
 
-    <!-- Username auto fill -->
-    <input type="text" id="fpUser" readonly>
+    <!-- Username (auto-filled) -->
+    <input type="text" id="fpUser" placeholder="Username" readonly>
 
+    <!-- New Password -->
     <input type="password" id="newPass" placeholder="New Password">
+
+    <!-- Confirm Password -->
     <input type="password" id="confirmPass" placeholder="Confirm Password">
 
+    <!-- Button -->
     <button class="register-btn" onclick="resetPassword()">Update Password</button>
 
+    <!-- Message -->
     <p id="fpMessage"></p>
 </div>
 
 <script src="script.js"></script>
+
+<!-- Auto fill username AFTER page load -->
 <script>
-    // Auto fill username
-    document.getElementById("fpUser").value = localStorage.getItem("tempUser");
+window.onload = function () {
+    var user = localStorage.getItem("tempUser");
+
+    if (user) {
+        document.getElementById("fpUser").value = user;
+    }
+};
 </script>
 
 </body>
