@@ -38,7 +38,7 @@ input {
 .register-btn {
     width: 100%;
     padding: 12px;
-    background-color: red;
+    background-color: green;
     color: white;
     border: none;
 }
