@@ -1,17 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Welcome Page</title>
+    <title>Chat Page</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="login-container">
-        <h1>Login Successful ✅</h1>
-        <p>Welcome to My Chat Page</p>
+<body class="chat-body">
+
+<div class="chat-container">
+
+    <div class="chat-header">
+        Welcome 👋
     </div>
+
+    <div class="chat-box" id="chatBox">
+        <div class="message bot">Hello! How can I help you?</div>
+    </div>
+
+    <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Type message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
