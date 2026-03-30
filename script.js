@@ -68,3 +68,7 @@ function sendMessage() {
     input.value = "";
     chatBox.scrollTop = chatBox.scrollHeight;
 }
+
+function goToRegister() {
+    window.location.href = "register.html";
+}
