@@ -32,7 +32,7 @@ input {
 }
 
 .login-btn:hover {
-    background-color: red;
+    background-color: green;
 }
 
 .register-btn {
