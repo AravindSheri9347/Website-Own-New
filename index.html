@@ -26,3 +26,11 @@
 <script src="script.js"></script>
 </body>
 </html>
+<script>
+window.onload = function () {
+    var user = localStorage.getItem("tempUser");
+    if (user) {
+        document.getElementById("username").value = user;
+    }
+};
+</script>
