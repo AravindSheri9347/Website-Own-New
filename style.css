@@ -115,3 +115,15 @@ input {
     color: white;
     border: none;
 }
+
+.register-text {
+    color: red;
+    margin-top: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+}
+
+.register-text:hover {
+    text-decoration: underline;
+}
