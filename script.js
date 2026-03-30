@@ -81,3 +81,29 @@ function goToForgot() {
 
     window.location.href = "forgot.html";
 }
+
+function resetPassword() {
+    var user = document.getElementById("fpUser").value;
+    var newPass = document.getElementById("newPass").value;
+    var confirmPass = document.getElementById("confirmPass").value;
+
+    if (newPass === "" || confirmPass === "") {
+        document.getElementById("fpMessage").innerHTML = "Fill all fields!";
+        return;
+    }
+
+    if (newPass !== confirmPass) {
+        document.getElementById("fpMessage").innerHTML = "Passwords do not match!";
+        return;
+    }
+
+    // update password
+    localStorage.setItem("password", newPass);
+    localStorage.setItem("username", user);
+
+    document.getElementById("fpMessage").innerHTML = "Password Updated! Redirecting...";
+
+    setTimeout(() => {
+        window.location.href = "index.html";
+    }, 2000);
+}
