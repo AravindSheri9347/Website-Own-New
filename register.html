@@ -1,23 +1,22 @@
-<!-- register.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Register Page</title>
+    <title>Register</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="login-container">
-        <h1>Register</h1>
 
-        <input type="text" id="regUser" placeholder="Enter Username">
-        <input type="password" id="regPass" placeholder="Enter Password">
+<div class="login-container">
+    <h2>Register</h2>
 
-        <button class="register-btn" onclick="registerUser()">REGISTER</button>
+    <input type="text" id="regUser" placeholder="Username">
+    <input type="password" id="regPass" placeholder="Password">
 
-        <p id="regMessage"></p>
-    </div>
+    <button onclick="registerUser()" class="register-btn">Register</button>
 
-    <script src="script.js"></script>
+    <p id="regMessage"></p>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
