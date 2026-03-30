@@ -108,3 +108,70 @@ function resetPassword() {
         window.location.href = "index.html";
     }, 1500);
 }
+
+function sendMessage() {
+    var input = document.getElementById("chatInput");
+    var message = input.value;
+
+    if (message === "") return;
+
+    var chatData = JSON.parse(localStorage.getItem("chat")) || [];
+
+    chatData.push({
+        type: "text",
+        text: message
+    });
+
+    localStorage.setItem("chat", JSON.stringify(chatData));
+
+    input.value = "";
+    loadChat();
+}
+function sendImage() {
+    var file = document.getElementById("fileInput").files[0];
+
+    if (!file) return;
+
+    var reader = new FileReader();
+
+    reader.onload = function () {
+        var chatData = JSON.parse(localStorage.getItem("chat")) || [];
+
+        chatData.push({
+            type: "image",
+            src: reader.result
+        });
+
+        localStorage.setItem("chat", JSON.stringify(chatData));
+        loadChat();
+    };
+
+    reader.readAsDataURL(file);
+}
+function loadChat() {
+    var chatBox = document.getElementById("chatBox");
+    chatBox.innerHTML = "";
+
+    var chatData = JSON.parse(localStorage.getItem("chat")) || [];
+
+    chatData.forEach(msg => {
+        if (msg.type === "text") {
+            var div = document.createElement("div");
+            div.className = "message user";
+            div.innerText = msg.text;
+            chatBox.appendChild(div);
+        }
+
+        if (msg.type === "image") {
+            var img = document.createElement("img");
+            img.src = msg.src;
+            img.className = "chat-image";
+            chatBox.appendChild(img);
+        }
+    });
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+window.onload = function () {
+    loadChat();
+};
