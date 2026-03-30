@@ -1,5 +1,5 @@
 body {
-    background-color: lightgreen;
+    background-color: lightblue;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -7,7 +7,7 @@ body {
 }
 
 .login-container {
-    background-color: yellow;
+    background-color: lightgreen;
     padding: 40px;
     border-radius: 10px;
     text-align: center;
