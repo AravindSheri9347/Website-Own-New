@@ -139,3 +139,19 @@ input {
 .forgot-text:hover {
     text-decoration: underline;
 }
+/* PLUS ICON */
+.plus-icon {
+    font-size: 28px;
+    color: blue;
+    cursor: pointer;
+    padding: 8px;
+    font-weight: bold;
+}
+
+/* CHAT IMAGE */
+.chat-image {
+    max-width: 150px;
+    border-radius: 10px;
+    margin: 5px;
+}
+
