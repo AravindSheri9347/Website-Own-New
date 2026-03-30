@@ -72,3 +72,12 @@ function sendMessage() {
 function goToRegister() {
     window.location.href = "register.html";
 }
+
+function goToForgot() {
+    var user = document.getElementById("username").value;
+
+    // store username temporarily
+    localStorage.setItem("tempUser", user);
+
+    window.location.href = "forgot.html";
+}
