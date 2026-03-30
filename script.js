@@ -45,3 +45,26 @@ function registerUser() {
         window.location.href = "index.html";
     }, 2000);
 }
+
+// ✅ ADD THIS AT THE END (CHAT FUNCTION)
+function sendMessage() {
+    var input = document.getElementById("chatInput");
+    var message = input.value;
+
+    if (message === "") return;
+
+    var chatBox = document.getElementById("chatBox");
+
+    var userMsg = document.createElement("div");
+    userMsg.className = "message user";
+    userMsg.innerText = message;
+    chatBox.appendChild(userMsg);
+
+    var botMsg = document.createElement("div");
+    botMsg.className = "message bot";
+    botMsg.innerText = "You said: " + message;
+    chatBox.appendChild(botMsg);
+
+    input.value = "";
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
