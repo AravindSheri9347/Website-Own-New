@@ -97,13 +97,14 @@ function resetPassword() {
         return;
     }
 
-    // update password
-    localStorage.setItem("password", newPass);
+    // ✅ Update stored data
     localStorage.setItem("username", user);
+    localStorage.setItem("password", newPass);
 
-    document.getElementById("fpMessage").innerHTML = "Password Updated! Redirecting...";
+    document.getElementById("fpMessage").innerHTML = "Password Updated Successfully!";
 
-    setTimeout(() => {
+    // ✅ Small delay then redirect
+    setTimeout(function () {
         window.location.href = "index.html";
-    }, 2000);
+    }, 1500);
 }
