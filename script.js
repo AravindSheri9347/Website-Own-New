@@ -1,4 +1,19 @@
+import { auth, db } from "./firebase.js";
+
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+import {
+  collection,
+  addDoc,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+
 // LOGIN FUNCTION
+
 function checkLogin() {
     var user = document.getElementById("username").value;
     var pass = document.getElementById("password").value;
