@@ -152,6 +152,8 @@ loadChat();
 }
 };
 
+window.sendMessage = sendMessage;
+window.logout = logout;
 // =======================
 // 🌐 MAKE FUNCTIONS GLOBAL
 // =======================
