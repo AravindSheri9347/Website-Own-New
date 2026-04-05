@@ -1,41 +1,46 @@
 <!DOCTYPE html>
+
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Page</title>
+    <title> Abhi Chat App</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="chat-body">
+<body>
+
+<!-- 🔝 TOP BAR -->
+
+<div class="top-bar">
+    <span id="userEmail">Loading...</span>
+    <button onclick="logout()">Logout</button>
+</div>
+
+<!-- 💬 CHAT CONTAINER -->
 
 <div class="chat-container">
 
-    <div class="chat-header">
-        Welcome Chaithra👋
-    </div>
+```
+<!-- CHAT BOX -->
+<div id="chatBox" class="chat-box"></div>
 
-    <div class="chat-box" id="chatBox">
-        <div class="message bot">Hello! Chaithra How are you?</div>
-        <!-- <div class="message bot"> Busy anukunta kada snap lo msg led m led</div> -->
-    </div>
-
-    <div class="chat-input">
-        <div class="chat-input">
-
-        <!-- + ICON -->
-        <label for="fileInput" class="plus-icon">+</label>
-        <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="sendImage()">
+<!-- INPUT AREA -->
+<div class="input-area">
+    <input type="text" id="chatInput" placeholder="Type a message...">
     
-        <!-- TEXT INPUT -->
-        <input type="text" id="chatInput" placeholder="Type message...">
+    <button onclick="sendMessage()">Send</button>
     
-        <!-- SEND BUTTON -->
-        <button onclick="sendMessage()">Send</button>
-    </div>
-    </div>
+    <!-- OPTIONAL IMAGE UPLOAD -->
+    <input type="file" id="fileInput">
+    <button onclick="sendImage()">Image</button>
+</div>
+```
 
 </div>
 
+<!-- 🔗 CONNECT SCRIPT -->
+
 <script type="module" src="script.js"></script>
+
 </body>
 </html>
