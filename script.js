@@ -123,6 +123,8 @@ function resetPassword() {
     // ✅ Update stored data
     localStorage.setItem("username", user);
     localStorage.setItem("password", newPass);
+    document.getElementById("regEmail").value =
+    localStorage.getItem("tempEmail");
 
     document.getElementById("fpMessage").innerHTML = "Password Updated Successfully!";
 
