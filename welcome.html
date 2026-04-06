@@ -1,29 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Page</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Page</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body class="chat-body">
-
-<div class="chat-container">
+  <div class="chat-container">
     <div class="chat-header">
-        Welcome <span id="userEmail"></span> 👋
+      Welcome <span id="userEmail"></span> 👋
+      <button class="logout-btn" onclick="logoutUser()">Logout</button>
     </div>
 
     <div id="chatBox" class="chat-box"></div>
 
     <div class="chat-input">
-        <input type="text" id="chatInput" placeholder="Type message...">
-        <button onclick="sendMessage()">Send</button>
-
-        <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="sendImage()">
-        <label for="fileInput" class="plus-icon">+</label>
+      <input type="text" id="chatInput" placeholder="Type message...">
+      <button onclick="sendMessage()">Send</button>
+      <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="sendImage()">
+      <label for="fileInput" class="plus-icon">+</label>
     </div>
-</div>
+  </div>
 
-<script type="module" src="script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
