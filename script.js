@@ -70,7 +70,7 @@ function sendMessage() {
 }
 
 function goToRegister() {
-    window.location.href = "register.html";
+    window.location.href = "Register.html";
 }
 
 function goToForgot() {
