@@ -1,119 +1,54 @@
-body {
-    background-color: lightblue;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
 }
 
+body {
+    background-color: lightblue;
+    min-height: 100vh;
+}
+
+/* LOGIN / REGISTER / FORGOT */
 .login-container {
     background-color: lightgreen;
     padding: 40px;
     border-radius: 10px;
     text-align: center;
+    width: 340px;
+    margin: 80px auto;
 }
 
-input {
+.login-container h1 {
+    margin-bottom: 20px;
+}
+
+.login-container input {
     width: 100%;
     padding: 15px;
     margin-bottom: 20px;
     border: 2px solid black;
-}
-
-.login-btn {
-    width: 100%;
-    padding: 12px;
-    background-color: green;   
-    color: white;          
-    border: none;
     border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
+    outline: none;
 }
 
-.login-btn:hover {
-    background-color: green;
-}
-
+.login-btn,
 .register-btn {
     width: 100%;
     padding: 12px;
     background-color: green;
     color: white;
     border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 5px;
 }
 
-/* CHAT PAGE BACKGROUND */
-.chat-body {
-    background-color: lightpink;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-/* CHAT CONTAINER */
-.chat-container {
-    width: 95%;
-    max-width: 400px;
-    height: 90vh;
-    background-color: white;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-}
-
-/* HEADER */
-.chat-header {
-    background-color: deeppink;
-    color: white;
-    padding: 15px;
-    text-align: center;
-    font-weight: bold;
-}
-
-/* CHAT BOX */
-.chat-box {
-    flex: 1;
-    padding: 10px;
-    overflow-y: auto;
-}
-
-/* MESSAGES */
-.message {
-    padding: 10px;
-    margin: 5px;
-    border-radius: 10px;
-    max-width: 70%;
-}
-
-.user {
-    background-color: lightblue;
-    align-self: flex-end;
-}
-
-.bot {
-    background-color: lightgray;
-    align-self: flex-start;
-}
-
-/* INPUT AREA */
-.chat-input {
-    display: flex;
-    border-top: 1px solid #ccc;
-}
-
-.chat-input input {
-    flex: 1;
-    padding: 10px;
-    border: none;
-}
-
-.chat-input button {
-    padding: 10px;
-    background-color: deeppink;
-    color: white;
-    border: none;
+.login-btn:hover,
+.register-btn:hover {
+    background-color: darkgreen;
 }
 
 .register-text {
@@ -122,9 +57,12 @@ input {
     cursor: pointer;
     font-weight: bold;
     text-align: center;
+    display: inline-block;
+    text-decoration: none;
 }
 
-.register-text:hover {
+.register-text:hover,
+.forgot-text:hover {
     text-decoration: underline;
 }
 
@@ -136,9 +74,97 @@ input {
     font-size: 14px;
 }
 
-.forgot-text:hover {
-    text-decoration: underline;
+/* CHAT PAGE BACKGROUND */
+.chat-body {
+    background-color: lightpink;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 10px;
 }
+
+/* CHAT CONTAINER */
+.chat-container {
+    width: 95%;
+    max-width: 400px;
+    height: 90vh;
+    background-color: white;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* HEADER */
+.chat-header {
+    background-color: deeppink;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* CHAT BOX */
+.chat-box {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* MESSAGES */
+.message {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+    max-width: 70%;
+    word-wrap: break-word;
+}
+
+.message.user {
+    background-color: lightblue;
+    align-self: flex-end;
+}
+
+.message.other {
+    background-color: lightgray;
+    align-self: flex-start;
+}
+
+/* INPUT AREA */
+.chat-input {
+    display: flex;
+    align-items: center;
+    border-top: 1px solid #ccc;
+    padding: 8px;
+    gap: 8px;
+}
+
+.chat-input input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.chat-input button {
+    padding: 10px 14px;
+    background-color: deeppink;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.chat-input button:hover {
+    background-color: #c2185b;
+}
+
 /* PLUS ICON */
 .plus-icon {
     font-size: 28px;
@@ -146,6 +172,7 @@ input {
     cursor: pointer;
     padding: 8px;
     font-weight: bold;
+    user-select: none;
 }
 
 /* CHAT IMAGE */
@@ -153,4 +180,29 @@ input {
     max-width: 150px;
     border-radius: 10px;
     margin: 5px;
+    align-self: flex-start;
+}
+
+/* MESSAGE AREA TEXT */
+#message,
+#regMessage,
+#fpMessage {
+    margin-top: 10px;
+    font-size: 14px;
+    color: red;
+}
+
+/* LOGOUT BUTTON */
+.logout-btn {
+    padding: 8px 12px;
+    background-color: white;
+    color: deeppink;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.logout-btn:hover {
+    background-color: #ffe6f3;
 }
