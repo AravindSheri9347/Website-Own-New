@@ -232,3 +232,4 @@ window.onload = function () {
         }
     }
 };
+console.log("Firebase Loaded:", firebase);
