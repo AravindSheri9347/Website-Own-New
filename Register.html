@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register Page</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -10,29 +11,15 @@
 <div class="login-container">
     <h1>Register</h1>
 
-    <!-- EMAIL -->
     <input type="email" id="regEmail" placeholder="Enter Email">
-
-    <!-- PASSWORD -->
     <input type="password" id="regPass" placeholder="Enter Password">
-
-    <!-- BUTTON -->
     <button class="register-btn" onclick="registerUser()">REGISTER</button>
-
-    <!-- MESSAGE -->
     <p id="regMessage"></p>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"></script>
-
-
-<script src="script.js"></script>
+<script type="module" src="script.js"></script>
 
 <script>
-/* ✅ Auto-fill email from login page */
 window.onload = function () {
     var savedEmail = localStorage.getItem("tempEmail");
     if (savedEmail) {
