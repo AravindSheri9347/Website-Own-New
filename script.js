@@ -1,3 +1,31 @@
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  onSnapshot,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
 // FIREBASE CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyB5RPmnslaA3mXVIPxapx7YMfLSp6wlA6A",
@@ -8,250 +36,198 @@ const firebaseConfig = {
   appId: "1:753237671940:web:c1bfc1b2c21aee16dc3551",
 };
 
-// INITIALIZE
-firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
 
+window.checkLogin = function () {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const message = document.getElementById("message");
 
-function checkLogin() {
-    var emailInput = document.getElementById("email");
-    var passInput = document.getElementById("password");
-    var messageBox = document.getElementById("message");
+  if (!email || !password) {
+    message.textContent = "Please enter email and password.";
+    return;
+  }
 
-    // ✅ Check if elements exist (prevents null errors)
-    if (!emailInput || !passInput || !messageBox) {
-        console.error("Missing HTML elements");
-        return;
-    }
-
-    var email = emailInput.value.trim();
-    var password = passInput.value.trim();
-
-    // ✅ Basic validation
-    if (email === "" || password === "") {
-        messageBox.innerHTML = "Please enter email and password!";
-        return;
-    }
-
-    // ✅ Firebase Login
-    firebase.auth().signInWithEmailAndPassword(email, password)
-    .then((userCredential) => {
-
-        // Save user
-        localStorage.setItem("currentUser", email);
-
-        messageBox.innerHTML = "Login Successful!";
-
-        setTimeout(() => {
-            window.location.href = "welcome.html";
-        }, 1000);
-
-    })
-    .catch((error) => {
-
-        console.log("Login Error:", error.code);
-
-        // ❌ USER NOT FOUND → go to Register
-        if (error.code === "auth/user-not-found") {
-
-            localStorage.setItem("tempEmail", email);
-
-            messageBox.innerHTML =
-                "User not found. Redirecting to Register...";
-
-            setTimeout(() => {
-                window.location.href = "Register.html";
-            }, 1500);
-        }
-
-        // ❌ WRONG PASSWORD
-        else if (error.code === "auth/wrong-password") {
-            messageBox.innerHTML = "Incorrect password!";
-        }
-
-        // ❌ INVALID EMAIL
-        else if (error.code === "auth/invalid-email") {
-            messageBox.innerHTML = "Invalid email format!";
-        }
-
-        // ❌ TOO MANY REQUESTS (important case)
-        else if (error.code === "auth/too-many-requests") {
-            messageBox.innerHTML = "Too many attempts. Try later!";
-        }
-
-        // ❌ DEFAULT ERROR
-        else {
-            messageBox.innerHTML = error.message;
-        }
-    });
-}
-
-
-// REGISTER FUNCTION
-function registerUser() {
-    var email = document.getElementById("regEmail").value;
-    var pass = document.getElementById("regPass").value;
-
-    if (email === "" || pass === "") {
-        document.getElementById("regMessage").innerHTML = "Fill all fields!";
-        return;
-    }
-
-    firebase.auth().createUserWithEmailAndPassword(email, pass)
+  signInWithEmailAndPassword(auth, email, password)
     .then(() => {
-
-        document.getElementById("regMessage").innerHTML =
-            "Registered Successfully! Redirecting to Login...";
-
-        // clear temp email
-        localStorage.removeItem("tempEmail");
-
-        setTimeout(() => {
-            window.location.href = "index.html"; // back to login
-        }, 1500);
-
+      message.style.color = "green";
+      message.textContent = "Login successful.";
+      setTimeout(() => {
+        window.location.href = "welcome.html";
+      }, 1000);
     })
     .catch((error) => {
-        document.getElementById("regMessage").innerHTML = error.message;
+      message.style.color = "red";
+      if (error.code === "auth/user-not-found") {
+        localStorage.setItem("tempEmail", email);
+        message.textContent = "User not found. Redirecting to Register...";
+        setTimeout(() => {
+          window.location.href = "Register.html";
+        }, 1500);
+      } else {
+        message.textContent = error.message;
+      }
     });
-}
-
-// ✅ ADD THIS AT THE END (CHAT FUNCTION)
-function sendMessage() {
-    var input = document.getElementById("chatInput");
-    var message = input.value;
-
-    if (message === "") return;
-
-    var chatBox = document.getElementById("chatBox");
-
-    var userMsg = document.createElement("div");
-    userMsg.className = "message user";
-    userMsg.innerText = message;
-    chatBox.appendChild(userMsg);
-
-    var botMsg = document.createElement("div");
-    botMsg.className = "message bot";
-    botMsg.innerText = "You said: " + message;
-    chatBox.appendChild(botMsg);
-
-    input.value = "";
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-function goToRegister() {
-    window.location.href = "Register.html";
-}
-
-function goToForgot() {
-    var user = document.getElementById("username").value;
-
-    // store username temporarily
-    localStorage.setItem("tempUser", user);
-
-    window.location.href = "forgot.html";
-}
-
-function resetPassword() {
-    var user = document.getElementById("fpUser").value;
-    var newPass = document.getElementById("newPass").value;
-    var confirmPass = document.getElementById("confirmPass").value;
-
-    if (newPass === "" || confirmPass === "") {
-        document.getElementById("fpMessage").innerHTML = "Fill all fields!";
-        return;
-    }
-
-    if (newPass !== confirmPass) {
-        document.getElementById("fpMessage").innerHTML = "Passwords do not match!";
-        return;
-    }
-
-    // ✅ Update stored data
-    localStorage.setItem("username", user);
-    localStorage.setItem("password", newPass);
-    document.getElementById("regEmail").value =
-    localStorage.getItem("tempEmail");
-
-    document.getElementById("fpMessage").innerHTML = "Password Updated Successfully!";
-
-    // ✅ Small delay then redirect
-    setTimeout(function () {
-        window.location.href = "index.html";
-    }, 1500);
-}
-
-function sendMessage() {
-    var input = document.getElementById("chatInput");
-    var message = input.value;
-
-    if (message === "") return;
-
-    var chatData = JSON.parse(localStorage.getItem("chat")) || [];
-
-    chatData.push({
-        type: "text",
-        text: message
-    });
-
-    localStorage.setItem("chat", JSON.stringify(chatData));
-
-    input.value = "";
-    loadChat();
-}
-function sendImage() {
-    var file = document.getElementById("fileInput").files[0];
-
-    if (!file) return;
-
-    var reader = new FileReader();
-
-    reader.onload = function () {
-        var chatData = JSON.parse(localStorage.getItem("chat")) || [];
-
-        chatData.push({
-            type: "image",
-            src: reader.result
-        });
-
-        localStorage.setItem("chat", JSON.stringify(chatData));
-        loadChat();
-    };
-
-    reader.readAsDataURL(file);
-}
-function loadChat() {
-    var chatBox = document.getElementById("chatBox");
-    chatBox.innerHTML = "";
-
-    var chatData = JSON.parse(localStorage.getItem("chat")) || [];
-
-    chatData.forEach(msg => {
-        if (msg.type === "text") {
-            var div = document.createElement("div");
-            div.className = "message user";
-            div.innerText = msg.text;
-            chatBox.appendChild(div);
-        }
-
-        if (msg.type === "image") {
-            var img = document.createElement("img");
-            img.src = msg.src;
-            img.className = "chat-image";
-            chatBox.appendChild(img);
-        }
-    });
-
-    chatBox.scrollTop = chatBox.scrollHeight;
-}
-window.onload = function () {
-
-    var emailBox = document.getElementById("regEmail");
-
-    if (emailBox) {
-        var savedEmail = localStorage.getItem("tempEmail");
-        if (savedEmail) {
-            emailBox.value = savedEmail;
-        }
-    }
 };
-console.log("Firebase Loaded:", firebase);
+
+window.registerUser = function () {
+  const email = document.getElementById("regEmail").value.trim();
+  const password = document.getElementById("regPass").value.trim();
+  const message = document.getElementById("regMessage");
+
+  if (!email || !password) {
+    message.textContent = "Fill all fields.";
+    return;
+  }
+
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      return addDoc(collection(db, "users"), {
+        uid: userCredential.user.uid,
+        email: userCredential.user.email,
+        createdAt: serverTimestamp()
+      });
+    })
+    .then(() => {
+      message.style.color = "green";
+      message.textContent = "Registered successfully. Redirecting to login...";
+      localStorage.removeItem("tempEmail");
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1500);
+    })
+    .catch((error) => {
+      message.style.color = "red";
+      message.textContent = error.message;
+    });
+};
+
+window.resetPassword = function () {
+  const email = document.getElementById("fpEmail").value.trim();
+  const message = document.getElementById("fpMessage");
+
+  if (!email) {
+    message.textContent = "Please enter your email.";
+    return;
+  }
+
+  sendPasswordResetEmail(auth, email)
+    .then(() => {
+      message.style.color = "green";
+      message.textContent = "Password reset email sent.";
+    })
+    .catch((error) => {
+      message.style.color = "red";
+      message.textContent = error.message;
+    });
+};
+
+window.goToForgot = function () {
+  window.location.href = "forgot.html";
+};
+
+window.logoutUser = function () {
+  signOut(auth).then(() => {
+    window.location.href = "index.html";
+  });
+};
+
+window.sendMessage = async function () {
+  const input = document.getElementById("chatInput");
+  const text = input.value.trim();
+  if (!text) return;
+
+  const user = auth.currentUser;
+  if (!user) {
+    window.location.href = "index.html";
+    return;
+  }
+
+  await addDoc(collection(db, "messages"), {
+    type: "text",
+    text: text,
+    email: user.email,
+    uid: user.uid,
+    createdAt: serverTimestamp()
+  });
+
+  input.value = "";
+};
+
+window.sendImage = async function () {
+  const fileInput = document.getElementById("fileInput");
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  const user = auth.currentUser;
+  if (!user) {
+    window.location.href = "index.html";
+    return;
+  }
+
+  const fileRef = ref(storage, `chat-images/${Date.now()}_${file.name}`);
+  await uploadBytes(fileRef, file);
+  const url = await getDownloadURL(fileRef);
+
+  await addDoc(collection(db, "messages"), {
+    type: "image",
+    imageUrl: url,
+    email: user.email,
+    uid: user.uid,
+    createdAt: serverTimestamp()
+  });
+
+  fileInput.value = "";
+};
+
+function loadChat() {
+  const chatBox = document.getElementById("chatBox");
+  if (!chatBox) return;
+
+  const q = query(collection(db, "messages"), orderBy("createdAt", "asc"));
+  onSnapshot(q, (snapshot) => {
+    chatBox.innerHTML = "";
+    snapshot.forEach((doc) => {
+      const msg = doc.data();
+
+      if (msg.type === "text") {
+        const div = document.createElement("div");
+        div.className = msg.uid === auth.currentUser?.uid ? "message user" : "message other";
+        div.textContent = msg.text;
+        chatBox.appendChild(div);
+      }
+
+      if (msg.type === "image") {
+        const img = document.createElement("img");
+        img.src = msg.imageUrl;
+        img.className = "chat-image";
+        chatBox.appendChild(img);
+      }
+    });
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+  });
+}
+
+window.addEventListener("load", () => {
+  const regEmail = document.getElementById("regEmail");
+  if (regEmail) {
+    const savedEmail = localStorage.getItem("tempEmail");
+    if (savedEmail) regEmail.value = savedEmail;
+  }
+
+  const userEmail = document.getElementById("userEmail");
+  if (userEmail) {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        userEmail.textContent = user.email;
+        loadChat();
+      } else {
+        window.location.href = "index.html";
+      }
+    });
+  }
+});
