@@ -175,3 +175,13 @@ function loadChat() {
 window.onload = function () {
     loadChat();
 };
+
+window.onload = function () {
+    var user = firebase.auth().currentUser;
+
+    if (user) {
+        document.getElementById("userEmail").innerText = user.email;
+    }
+
+    loadChat();
+};
