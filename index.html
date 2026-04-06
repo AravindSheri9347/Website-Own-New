@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Login Page</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,40 +11,18 @@
 <div class="login-container">
     <h1>Login</h1>
 
-    <!-- EMAIL INPUT -->
     <input type="email" id="email" placeholder="Enter Email">
-
-    <!-- PASSWORD INPUT -->
     <input type="password" id="password" placeholder="Enter Password">
 
-    <!-- FORGOT PASSWORD -->
     <p class="forgot-text" onclick="goToForgot()">Forgot Password?</p>
 
-    <!-- LOGIN BUTTON -->
     <button class="login-btn" onclick="checkLogin()">Log in</button>
 
-    <!-- MESSAGE -->
     <p id="message"></p>
 
-    <!-- REGISTER LINK -->
     <a href="Register.html" class="register-text">Register</a>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"></script>
-
-
-
-<script src="script.js"></script>
+<script type="module" src="script.js"></script>
 </body>
 </html>
-<script>
-window.onload = function () {
-    var user = localStorage.getItem("tempUser");
-    if (user) {
-        document.getElementById("username").value = user;
-    }
-};
-</script>
