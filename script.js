@@ -17,7 +17,7 @@ function checkLogin() {
         document.getElementById("message").innerHTML = "User not found! Redirecting to Register...";
 
         setTimeout(() => {
-            window.location.href = "register.html";
+            window.location.href = "Register.html";
         }, 1500);
     }
 }
