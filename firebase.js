@@ -5,9 +5,9 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebas
 
 // Your config (copy from Firebase console)
 const firebaseConfig = {
-  apiKey: "api key",
-  authDomain: "cj",
-  projectId: "c",
+  apiKey: "AIzaSyB5RPmnslaA3mXVIPxapx7YMfLSp6wlA6A",
+  authDomain: "chitchat-1a684.firebaseapp.com",
+  projectId: "chitchat-1a684",
 };
 
 // Initialize
