@@ -1,25 +1,23 @@
 // LOGIN FUNCTION
 function checkLogin() {
-    var user = document.getElementById("username").value;
-    var pass = document.getElementById("password").value;
+    var email = document.getElementById("email").value;
+    var password = document.getElementById("password").value;
 
-    var storedUser = localStorage.getItem("username");
-    var storedPass = localStorage.getItem("password");
+    firebase.auth().signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
 
-    if (user === storedUser && pass === storedPass) {
+        localStorage.setItem("currentUser", email);
+
         document.getElementById("message").innerHTML = "Login Successful!";
 
         setTimeout(() => {
             window.location.href = "welcome.html";
         }, 1000);
 
-    } else {
-        document.getElementById("message").innerHTML = "User not found! Redirecting to Register...";
-
-        setTimeout(() => {
-            window.location.href = "Register.html";
-        }, 1500);
-    }
+    })
+    .catch((error) => {
+        document.getElementById("message").innerHTML = error.message;
+    });
 }
 
 
