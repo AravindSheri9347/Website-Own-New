@@ -1,32 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Page</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Page</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<div class="login-container">
+  <div class="login-container">
     <h1>Register</h1>
-
     <input type="email" id="regEmail" placeholder="Enter Email">
     <input type="password" id="regPass" placeholder="Enter Password">
     <button class="register-btn" onclick="registerUser()">REGISTER</button>
     <p id="regMessage"></p>
-</div>
-
-<script type="module" src="script.js"></script>
-
-<script>
-window.onload = function () {
-    var savedEmail = localStorage.getItem("tempEmail");
-    if (savedEmail) {
-        document.getElementById("regEmail").value = savedEmail;
-    }
-};
-</script>
-
+  </div>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
