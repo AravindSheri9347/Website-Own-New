@@ -1,4 +1,3 @@
-// LOGIN FUNCTION
 function checkLogin() {
     var email = document.getElementById("email").value;
     var password = document.getElementById("password").value;
@@ -16,7 +15,33 @@ function checkLogin() {
 
     })
     .catch((error) => {
-        document.getElementById("message").innerHTML = error.message;
+
+        // ❌ USER NOT FOUND
+        if (error.code === "auth/user-not-found") {
+            document.getElementById("message").innerHTML =
+                "User not found. Redirecting to Register...";
+
+            setTimeout(() => {
+                window.location.href = "Register.html";
+            }, 1500);
+        }
+
+        // ❌ WRONG PASSWORD
+        else if (error.code === "auth/wrong-password") {
+            document.getElementById("message").innerHTML =
+                "Incorrect password!";
+        }
+
+        // ❌ INVALID EMAIL
+        else if (error.code === "auth/invalid-email") {
+            document.getElementById("message").innerHTML =
+                "Invalid email format!";
+        }
+
+        // ❌ OTHER ERRORS
+        else {
+            document.getElementById("message").innerHTML = error.message;
+        }
     });
 }
 
