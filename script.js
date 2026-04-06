@@ -52,25 +52,31 @@ function checkLogin() {
 
 // REGISTER FUNCTION
 function registerUser() {
-    var user = document.getElementById("regUser").value;
+    var email = document.getElementById("regEmail").value;
     var pass = document.getElementById("regPass").value;
 
-    if (user === "" || pass === "") {
-        document.getElementById("regMessage").innerHTML = "Please fill all fields!";
+    if (email === "" || pass === "") {
+        document.getElementById("regMessage").innerHTML = "Fill all fields!";
         return;
     }
 
-    // SAVE DATA
-    localStorage.setItem("username", user);
-    localStorage.setItem("password", pass);
+    firebase.auth().createUserWithEmailAndPassword(email, pass)
+    .then(() => {
 
-    // SHOW MESSAGE
-    document.getElementById("regMessage").innerHTML = "Registered Successfully! Redirecting to login...";
+        document.getElementById("regMessage").innerHTML =
+            "Registered Successfully! Redirecting to Login...";
 
-    // REDIRECT AFTER 2 SEC
-    setTimeout(() => {
-        window.location.href = "index.html";
-    }, 2000);
+        // clear temp email
+        localStorage.removeItem("tempEmail");
+
+        setTimeout(() => {
+            window.location.href = "index.html"; // back to login
+        }, 1500);
+
+    })
+    .catch((error) => {
+        document.getElementById("regMessage").innerHTML = error.message;
+    });
 }
 
 // ✅ ADD THIS AT THE END (CHAT FUNCTION)
