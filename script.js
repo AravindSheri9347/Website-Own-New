@@ -18,9 +18,13 @@ function checkLogin() {
 
         // ❌ USER NOT FOUND
         if (error.code === "auth/user-not-found") {
+
+            // save email for register page
+            localStorage.setItem("tempEmail", email);
+        
             document.getElementById("message").innerHTML =
                 "User not found. Redirecting to Register...";
-
+        
             setTimeout(() => {
                 window.location.href = "Register.html";
             }, 1500);
