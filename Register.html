@@ -1,4 +1,3 @@
-<!-- register.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,17 +6,34 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="login-container">
-        <h1>Register</h1>
 
-        <input type="email" id="regEmail">
-        <input type="password" id="regPass">
+<div class="login-container">
+    <h1>Register</h1>
 
-        <button class="register-btn" onclick="registerUser()">REGISTER</button>
+    <!-- EMAIL -->
+    <input type="email" id="regEmail" placeholder="Enter Email">
 
-        <p id="regMessage"></p>
-    </div>
+    <!-- PASSWORD -->
+    <input type="password" id="regPass" placeholder="Enter Password">
 
-    <script src="script.js"></script>
+    <!-- BUTTON -->
+    <button class="register-btn" onclick="registerUser()">REGISTER</button>
+
+    <!-- MESSAGE -->
+    <p id="regMessage"></p>
+</div>
+
+<script src="script.js"></script>
+
+<script>
+/* ✅ Auto-fill email from login page */
+window.onload = function () {
+    var savedEmail = localStorage.getItem("tempEmail");
+    if (savedEmail) {
+        document.getElementById("regEmail").value = savedEmail;
+    }
+};
+</script>
+
 </body>
 </html>
