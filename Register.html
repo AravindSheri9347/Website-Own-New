@@ -1,27 +1,23 @@
+<!-- register.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    
-    <!-- ✅ ADD THIS LINE -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Register</title>
+    <title>Register Page</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="login-container">
+        <h1>Register</h1>
 
-<div class="login-container">
-    <h1>Register</h1>
+        <input type="text" id="regUser" placeholder="Enter Username">
+        <input type="password" id="regPass" placeholder="Enter Password">
 
-    <input type="email" id="regUser" placeholder="Enter Email" required>
-    <input type="password" id="regPass" placeholder="Enter Password" required>
+        <button class="register-btn" onclick="registerUser()">REGISTER</button>
 
-    <button class="register-btn" onclick="registerUser()">REGISTER</button>
+        <p id="regMessage"></p>
+    </div>
 
-    <p id="regMessage"></p>
-</div>
-
-<script type="module" src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
