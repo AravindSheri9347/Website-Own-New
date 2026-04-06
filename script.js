@@ -13,15 +13,33 @@ firebase.initializeApp(firebaseConfig);
 
 
 function checkLogin() {
-    var email = document.getElementById("email").value;
-    var password = document.getElementById("password").value;
+    var emailInput = document.getElementById("email");
+    var passInput = document.getElementById("password");
+    var messageBox = document.getElementById("message");
 
+    // ✅ Check if elements exist (prevents null errors)
+    if (!emailInput || !passInput || !messageBox) {
+        console.error("Missing HTML elements");
+        return;
+    }
+
+    var email = emailInput.value.trim();
+    var password = passInput.value.trim();
+
+    // ✅ Basic validation
+    if (email === "" || password === "") {
+        messageBox.innerHTML = "Please enter email and password!";
+        return;
+    }
+
+    // ✅ Firebase Login
     firebase.auth().signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
 
+        // Save user
         localStorage.setItem("currentUser", email);
 
-        document.getElementById("message").innerHTML = "Login Successful!";
+        messageBox.innerHTML = "Login Successful!";
 
         setTimeout(() => {
             window.location.href = "welcome.html";
@@ -30,15 +48,16 @@ function checkLogin() {
     })
     .catch((error) => {
 
-        // ❌ USER NOT FOUND
+        console.log("Login Error:", error.code);
+
+        // ❌ USER NOT FOUND → go to Register
         if (error.code === "auth/user-not-found") {
 
-            // save email for register page
             localStorage.setItem("tempEmail", email);
-        
-            document.getElementById("message").innerHTML =
+
+            messageBox.innerHTML =
                 "User not found. Redirecting to Register...";
-        
+
             setTimeout(() => {
                 window.location.href = "Register.html";
             }, 1500);
@@ -46,19 +65,22 @@ function checkLogin() {
 
         // ❌ WRONG PASSWORD
         else if (error.code === "auth/wrong-password") {
-            document.getElementById("message").innerHTML =
-                "Incorrect password!";
+            messageBox.innerHTML = "Incorrect password!";
         }
 
         // ❌ INVALID EMAIL
         else if (error.code === "auth/invalid-email") {
-            document.getElementById("message").innerHTML =
-                "Invalid email format!";
+            messageBox.innerHTML = "Invalid email format!";
         }
 
-        // ❌ OTHER ERRORS
+        // ❌ TOO MANY REQUESTS (important case)
+        else if (error.code === "auth/too-many-requests") {
+            messageBox.innerHTML = "Too many attempts. Try later!";
+        }
+
+        // ❌ DEFAULT ERROR
         else {
-            document.getElementById("message").innerHTML = error.message;
+            messageBox.innerHTML = error.message;
         }
     });
 }
