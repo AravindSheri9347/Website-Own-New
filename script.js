@@ -222,15 +222,13 @@ function loadChat() {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 window.onload = function () {
-    loadChat();
-};
 
-window.onload = function () {
-    var user = firebase.auth().currentUser;
+    var emailBox = document.getElementById("regEmail");
 
-    if (user) {
-        document.getElementById("userEmail").innerText = user.email;
+    if (emailBox) {
+        var savedEmail = localStorage.getItem("tempEmail");
+        if (savedEmail) {
+            emailBox.value = savedEmail;
+        }
     }
-
-    loadChat();
 };
