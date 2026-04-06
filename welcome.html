@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,39 +9,21 @@
 <body class="chat-body">
 
 <div class="chat-container">
-
-    <!-- HEADER -->
     <div class="chat-header">
         Welcome <span id="userEmail"></span> 👋
     </div>
 
-    <!-- CHAT BOX -->
     <div id="chatBox" class="chat-box"></div>
 
-    <!-- INPUT AREA -->
     <div class="chat-input">
-
-        <!-- TEXT INPUT -->
         <input type="text" id="chatInput" placeholder="Type message...">
-
-        <!-- SEND BUTTON -->
         <button onclick="sendMessage()">Send</button>
 
-        <!-- FILE INPUT (HIDDEN) -->
         <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="sendImage()">
-
-        <!-- + ICON TO TRIGGER FILE -->
         <label for="fileInput" class="plus-icon">+</label>
-
     </div>
-
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"></script>
-
-<script src="script.js"></script>
-
 </div>
 
+<script type="module" src="script.js"></script>
 </body>
+</html>
