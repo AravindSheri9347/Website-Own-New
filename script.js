@@ -1,3 +1,17 @@
+// FIREBASE CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyB5RPmnslaA3mXVIPxapx7YMfLSp6wlA6A",
+  authDomain: "chitchat-1a684.firebaseapp.com",
+  projectId:  "chitchat-1a684",
+  storageBucket: "chitchat-1a684.firebasestorage.app",
+  messagingSenderId:  "753237671940",
+  appId: "1:753237671940:web:c1bfc1b2c21aee16dc3551",
+};
+
+// INITIALIZE
+firebase.initializeApp(firebaseConfig);
+
+
 function checkLogin() {
     var email = document.getElementById("email").value;
     var password = document.getElementById("password").value;
