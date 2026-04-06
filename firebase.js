@@ -3,16 +3,16 @@
 // import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 // import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// Your config (copy from Firebase console)
-const firebaseConfig = {
-  apiKey: "AIzaSyB5RPmnslaA3mXVIPxapx7YMfLSp6wlA6A",
-  authDomain: "chitchat-1a684.firebaseapp.com",
-  projectId: "chitchat-1a684",
-};
+// // Your config (copy from Firebase console)
+// const firebaseConfig = {
+//   apiKey: "AIzaSyB5RPmnslaA3mXVIPxapx7YMfLSp6wlA6A",
+//   authDomain: "chitchat-1a684.firebaseapp.com",
+//   projectId: "chitchat-1a684",
+// };
 
-// Initialize
-const app = initializeApp(firebaseConfig);
+// // Initialize
+// const app = initializeApp(firebaseConfig);
 
-// Export services
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+// // Export services
+// export const auth = getAuth(app);
+// export const db = getFirestore(app);
