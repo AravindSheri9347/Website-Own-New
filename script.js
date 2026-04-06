@@ -1,165 +1,177 @@
-// 🔥 IMPORTS (TOP OF FILE)
-import { auth, db } from "./firebase.js";
-
-import {
-createUserWithEmailAndPassword,
-signInWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-import {
-collection,
-addDoc,
-onSnapshot
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-// =======================
-// 🔐 LOGIN FUNCTION
-// =======================
+// LOGIN FUNCTION
 function checkLogin() {
-var user = document.getElementById("username").value;
-var pass = document.getElementById("password").value;
+    var user = document.getElementById("username").value;
+    var pass = document.getElementById("password").value;
 
-```
-signInWithEmailAndPassword(auth, user, pass)
-    .then(() => {
+    var storedUser = localStorage.getItem("username");
+    var storedPass = localStorage.getItem("password");
+
+    if (user === storedUser && pass === storedPass) {
         document.getElementById("message").innerHTML = "Login Successful!";
 
         setTimeout(() => {
             window.location.href = "welcome.html";
         }, 1000);
-    })
-    .catch(() => {
-        document.getElementById("message").innerHTML = "Invalid Email or Password!";
-    });
-```
 
-}
-
-// =======================
-// 📝 REGISTER FUNCTION
-// =======================
-function registerUser() {
-var user = document.getElementById("regUser").value;
-var pass = document.getElementById("regPass").value;
-
-```
-if (user === "" || pass === "") {
-    document.getElementById("regMessage").innerHTML = "Please fill all fields!";
-    return;
-}
-
-createUserWithEmailAndPassword(auth, user, pass)
-    .then(() => {
-        document.getElementById("regMessage").innerHTML = "Registered Successfully!";
+    } else {
+        document.getElementById("message").innerHTML = "User not found! Redirecting to Register...";
 
         setTimeout(() => {
-            window.location.href = "index.html";
+            window.location.href = "register.html";
         }, 1500);
-    })
-    .catch(error => {
-        document.getElementById("regMessage").innerHTML = error.message;
-    });
-```
-
+    }
 }
 
-// =======================
-// 💬 SEND MESSAGE (FIREBASE)
-// =======================
-async function sendMessage() {
-var input = document.getElementById("chatInput");
-var message = input.value;
 
-```
-if (message === "") return;
+// REGISTER FUNCTION
+function registerUser() {
+    var user = document.getElementById("regUser").value;
+    var pass = document.getElementById("regPass").value;
 
-await addDoc(collection(db, "messages"), {
-    text: message,
-    time: new Date()
-});
+    if (user === "" || pass === "") {
+        document.getElementById("regMessage").innerHTML = "Please fill all fields!";
+        return;
+    }
 
-input.value = "";
-```
+    // SAVE DATA
+    localStorage.setItem("username", user);
+    localStorage.setItem("password", pass);
 
+    // SHOW MESSAGE
+    document.getElementById("regMessage").innerHTML = "Registered Successfully! Redirecting to login...";
+
+    // REDIRECT AFTER 2 SEC
+    setTimeout(() => {
+        window.location.href = "index.html";
+    }, 2000);
 }
 
-// =======================
-// 📥 LOAD CHAT (REAL-TIME)
-// =======================
-function loadChat() {
-var chatBox = document.getElementById("chatBox");
+// ✅ ADD THIS AT THE END (CHAT FUNCTION)
+function sendMessage() {
+    var input = document.getElementById("chatInput");
+    var message = input.value;
 
-```
-onSnapshot(collection(db, "messages"), (snapshot) => {
-    chatBox.innerHTML = "";
+    if (message === "") return;
 
-    snapshot.forEach(doc => {
-        var msg = doc.data();
+    var chatBox = document.getElementById("chatBox");
 
-        var div = document.createElement("div");
-        div.className = "message user";
-        div.innerText = msg.text;
+    var userMsg = document.createElement("div");
+    userMsg.className = "message user";
+    userMsg.innerText = message;
+    chatBox.appendChild(userMsg);
 
-        chatBox.appendChild(div);
-    });
+    var botMsg = document.createElement("div");
+    botMsg.className = "message bot";
+    botMsg.innerText = "You said: " + message;
+    chatBox.appendChild(botMsg);
 
+    input.value = "";
     chatBox.scrollTop = chatBox.scrollHeight;
-});
-```
-
 }
 
-// =======================
-// 🔁 NAVIGATION FUNCTIONS
-// =======================
 function goToRegister() {
-window.location.href = "register.html";
+    window.location.href = "register.html";
 }
 
 function goToForgot() {
-window.location.href = "forgot.html";
+    var user = document.getElementById("username").value;
+
+    // store username temporarily
+    localStorage.setItem("tempUser", user);
+
+    window.location.href = "forgot.html";
 }
 
-// =======================
-// 🔄 RESET PASSWORD (TEMP - LOCAL ONLY)
-// =======================
 function resetPassword() {
-var newPass = document.getElementById("newPass").value;
-var confirmPass = document.getElementById("confirmPass").value;
+    var user = document.getElementById("fpUser").value;
+    var newPass = document.getElementById("newPass").value;
+    var confirmPass = document.getElementById("confirmPass").value;
 
-```
-if (newPass === "" || confirmPass === "") {
-    document.getElementById("fpMessage").innerHTML = "Fill all fields!";
-    return;
+    if (newPass === "" || confirmPass === "") {
+        document.getElementById("fpMessage").innerHTML = "Fill all fields!";
+        return;
+    }
+
+    if (newPass !== confirmPass) {
+        document.getElementById("fpMessage").innerHTML = "Passwords do not match!";
+        return;
+    }
+
+    // ✅ Update stored data
+    localStorage.setItem("username", user);
+    localStorage.setItem("password", newPass);
+
+    document.getElementById("fpMessage").innerHTML = "Password Updated Successfully!";
+
+    // ✅ Small delay then redirect
+    setTimeout(function () {
+        window.location.href = "index.html";
+    }, 1500);
 }
 
-if (newPass !== confirmPass) {
-    document.getElementById("fpMessage").innerHTML = "Passwords do not match!";
-    return;
+function sendMessage() {
+    var input = document.getElementById("chatInput");
+    var message = input.value;
+
+    if (message === "") return;
+
+    var chatData = JSON.parse(localStorage.getItem("chat")) || [];
+
+    chatData.push({
+        type: "text",
+        text: message
+    });
+
+    localStorage.setItem("chat", JSON.stringify(chatData));
+
+    input.value = "";
+    loadChat();
 }
+function sendImage() {
+    var file = document.getElementById("fileInput").files[0];
 
-document.getElementById("fpMessage").innerHTML = "Use Firebase reset (next step)";
-```
+    if (!file) return;
 
+    var reader = new FileReader();
+
+    reader.onload = function () {
+        var chatData = JSON.parse(localStorage.getItem("chat")) || [];
+
+        chatData.push({
+            type: "image",
+            src: reader.result
+        });
+
+        localStorage.setItem("chat", JSON.stringify(chatData));
+        loadChat();
+    };
+
+    reader.readAsDataURL(file);
 }
+function loadChat() {
+    var chatBox = document.getElementById("chatBox");
+    chatBox.innerHTML = "";
 
-// =======================
-// 🚀 AUTO LOAD CHAT
-// =======================
+    var chatData = JSON.parse(localStorage.getItem("chat")) || [];
+
+    chatData.forEach(msg => {
+        if (msg.type === "text") {
+            var div = document.createElement("div");
+            div.className = "message user";
+            div.innerText = msg.text;
+            chatBox.appendChild(div);
+        }
+
+        if (msg.type === "image") {
+            var img = document.createElement("img");
+            img.src = msg.src;
+            img.className = "chat-image";
+            chatBox.appendChild(img);
+        }
+    });
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
 window.onload = function () {
-if (document.getElementById("chatBox")) {
-loadChat();
-}
+    loadChat();
 };
-
-window.sendMessage = sendMessage;
-window.logout = logout;
-// =======================
-// 🌐 MAKE FUNCTIONS GLOBAL
-// =======================
-window.registerUser = registerUser;
-window.checkLogin = checkLogin;
-window.sendMessage = sendMessage;
-window.goToRegister = goToRegister;
-window.goToForgot = goToForgot;
-window.resetPassword = resetPassword;
