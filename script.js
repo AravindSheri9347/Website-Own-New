@@ -41,38 +41,66 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-window.checkLogin = function () {
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
-  const message = document.getElementById("message");
+// window.checkLogin = function () {
+//   const email = document.getElementById("email").value.trim();
+//   const password = document.getElementById("password").value.trim();
+//   const message = document.getElementById("message");
+
+//   if (!email || !password) {
+//     message.textContent = "Please enter email and password.";
+//     return;
+//   }
+
+//   signInWithEmailAndPassword(auth, email, password)
+//     .then(() => {
+//       message.style.color = "green";
+//       message.textContent = "Login successful.";
+//       setTimeout(() => {
+//         window.location.href = "welcome.html";
+//       }, 1000);
+//     })
+//     .catch((error) => {
+//       message.style.color = "red";
+//       if (error.code === "auth/user-not-found") {
+//         localStorage.setItem("tempEmail", email);
+//         message.textContent = "User not found. Redirecting to Register...";
+//         setTimeout(() => {
+//           window.location.href = "Register.html";
+//         }, 1500);
+//       } else {
+//         message.textContent = error.message;
+//       }
+//     });
+// };
+window.checkLogin = async function () {
+  const emailInput = document.getElementById("email");
+  const passInput = document.getElementById("password");
+  const messageBox = document.getElementById("message");
+
+  if (!emailInput || !passInput || !messageBox) return;
+
+  const email = emailInput.value.trim();
+  const password = passInput.value.trim();
 
   if (!email || !password) {
-    message.textContent = "Please enter email and password.";
+    messageBox.textContent = "Please enter email and password.";
     return;
   }
 
-  signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      message.style.color = "green";
-      message.textContent = "Login successful.";
-      setTimeout(() => {
-        window.location.href = "welcome.html";
-      }, 1000);
-    })
-    .catch((error) => {
-      message.style.color = "red";
-      if (error.code === "auth/user-not-found") {
-        localStorage.setItem("tempEmail", email);
-        message.textContent = "User not found. Redirecting to Register...";
-        setTimeout(() => {
-          window.location.href = "Register.html";
-        }, 1500);
-      } else {
-        message.textContent = error.message;
-      }
-    });
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    localStorage.setItem("currentUser", userCredential.user.email);
+    messageBox.style.color = "green";
+    messageBox.textContent = "Login successful.";
+    setTimeout(() => {
+      window.location.href = "welcome.html";
+    }, 1000);
+  } catch (error) {
+    console.error("Login error:", error.code, error.message);
+    messageBox.style.color = "red";
+    messageBox.textContent = error.message;
+  }
 };
-
 window.registerUser = function () {
   const email = document.getElementById("regEmail").value.trim();
   const password = document.getElementById("regPass").value.trim();
