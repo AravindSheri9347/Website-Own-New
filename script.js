@@ -112,8 +112,34 @@ window.registerUser = async function () {
     }, 2000);
 
   } catch (error) {
-    msg.innerHTML = error.message;
-    msg.style.color = "red";
+
+    // ❌ EMAIL ALREADY EXISTS
+    if (error.code === "auth/email-already-in-use") {
+      msg.innerHTML = "User already registered! Redirecting to login...";
+      msg.style.color = "orange";
+  
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 2000);
+    }
+  
+    // ❌ INVALID EMAIL
+    else if (error.code === "auth/invalid-email") {
+      msg.innerHTML = "Invalid email format!";
+      msg.style.color = "red";
+    }
+  
+    // ❌ WEAK PASSWORD
+    else if (error.code === "auth/weak-password") {
+      msg.innerHTML = "Password must be at least 6 characters!";
+      msg.style.color = "red";
+    }
+  
+    // ❌ OTHER ERRORS
+    else {
+      msg.innerHTML = error.message;
+      msg.style.color = "red";
+    }
   }
 };
 
