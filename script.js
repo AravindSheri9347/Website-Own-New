@@ -299,7 +299,9 @@ function loadChat() {
 
       if (msg.type === "text") {
         const div = document.createElement("div");
-        div.className = msg.uid === auth.currentUser?.uid ? "message user" : "message other";
+        div.className = currentUser && msg.uid === currentUser.uid 
+    ? "message user" 
+    : "message other";
         div.textContent = msg.text || "";
         chatBox.appendChild(div);
       }
