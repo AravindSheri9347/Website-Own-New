@@ -187,6 +187,18 @@ window.sendMessage = async function () {
   }
 };
 
+window.addEventListener("load", () => {
+  const chatInput = document.getElementById("chatInput");
+  if (chatInput) {
+    chatInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  }
+});
+
 window.sendVideo = async function () {
   const videoInput = document.getElementById("videoInput");
   const file = videoInput.files[0];
