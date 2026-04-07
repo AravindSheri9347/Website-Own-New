@@ -180,14 +180,19 @@ window.sendMessage = async function () {
       createdAt: serverTimestamp()
     });
 
-    // Clear input AFTER the message is sent
+    // Multiple ways to force clear input
     input.value = "";
+    input.innerHTML = "";
+    input.setAttribute("value", "");
+    
+    // Focus back
     input.focus();
+    
+    console.log("Input cleared");
   } catch (error) {
     console.error("Send message error:", error.code, error.message);
   }
 };
-
 window.sendVideo = async function () {
   const videoInput = document.getElementById("videoInput");
   const file = videoInput.files[0];
