@@ -159,12 +159,32 @@ window.sendMessage = async function () {
   }
 };
 
-window.addEventListener("load", () => {
-  const chatInput = document.getElementById("chatInput");
-  if (chatInput) {
-    chatInput.value = "";
+window.sendImage = async function () {
+  const fileInput = document.getElementById("fileInput");
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  const user = auth.currentUser;
+  if (!user) return;
+
+  try {
+    const fileRef = ref(storage, `chat-images/${Date.now()}_${file.name}`);
+    await uploadBytes(fileRef, file);
+    const url = await getDownloadURL(fileRef);
+
+    await addDoc(collection(db, "messages"), {
+      type: "image",
+      imageUrl: url,
+      email: user.email,
+      uid: user.uid,
+      createdAt: serverTimestamp()
+    });
+
+    fileInput.value = "";
+  } catch (error) {
+    console.error("Image upload error:", error);
   }
-});
+};
 
 window.sendVideo = async function () {
   const videoInput = document.getElementById("videoInput");
@@ -234,14 +254,7 @@ function loadChat() {
     console.error("Chat load error:", error);
   });
 }
-
 window.addEventListener("load", () => {
-  const regEmail = document.getElementById("regEmail");
-  if (regEmail) {
-    const savedEmail = localStorage.getItem("tempEmail");
-    if (savedEmail) regEmail.value = savedEmail;
-  }
-
   const userEmail = document.getElementById("userEmail");
   if (userEmail) {
     onAuthStateChanged(auth, (user) => {
@@ -251,13 +264,6 @@ window.addEventListener("load", () => {
       } else {
         window.location.href = "index.html";
       }
-  if (msg.type === "video") {
-  const video = document.createElement("video");
-  video.src = msg.videoUrl;
-  video.controls = true;
-  video.className = "chat-video";
-  chatBox.appendChild(video);
-}
     });
   }
 });
