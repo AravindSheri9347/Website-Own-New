@@ -206,3 +206,10 @@ body {
 .logout-btn:hover {
     background-color: #ffe6f3;
 }
+
+.chat-video {
+  max-width: 250px;
+  border-radius: 10px;
+  margin: 5px;
+  display: block;
+}
