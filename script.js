@@ -163,10 +163,7 @@ window.sendImage = async function () {
   if (!file) return;
 
   const user = auth.currentUser;
-  if (!user) {
-    window.location.href = "index.html";
-    return;
-  }
+  if (!user) return;
 
   const fileRef = ref(storage, `chat-images/${Date.now()}_${file.name}`);
   await uploadBytes(fileRef, file);
@@ -181,6 +178,29 @@ window.sendImage = async function () {
   });
 
   fileInput.value = "";
+};
+
+window.sendVideo = async function () {
+  const videoInput = document.getElementById("videoInput");
+  const file = videoInput.files[0];
+  if (!file) return;
+
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const fileRef = ref(storage, `chat-videos/${Date.now()}_${file.name}`);
+  await uploadBytes(fileRef, file);
+  const url = await getDownloadURL(fileRef);
+
+  await addDoc(collection(db, "messages"), {
+    type: "video",
+    videoUrl: url,
+    email: user.email,
+    uid: user.uid,
+    createdAt: serverTimestamp()
+  });
+
+  videoInput.value = "";
 };
 
 function loadChat() {
@@ -228,6 +248,13 @@ window.addEventListener("load", () => {
       } else {
         window.location.href = "index.html";
       }
+  if (msg.type === "video") {
+  const video = document.createElement("video");
+  video.src = msg.videoUrl;
+  video.controls = true;
+  video.className = "chat-video";
+  chatBox.appendChild(video);
+}
     });
   }
 });
