@@ -92,9 +92,8 @@ body {
 .chat-container {
   width: 100%;
   max-width: 900px;
+  height: 100dvh;
 
-  height: 100%; /* ✅ FULL FIT */
-  
   display: flex;
   flex-direction: column;
 
@@ -119,6 +118,11 @@ body {
 .chat-box {
   flex: 1;
   overflow-y: auto;
+  padding: 10px;
+
+  /* 👇 important */
+  display: flex;
+  flex-direction: column;
 }
 
 /* MESSAGES */
@@ -141,11 +145,16 @@ body {
 }
 /*chat input  */
 .chat-input {
+  position: sticky;
+  bottom: 0;
+
   display: flex;
   align-items: center;
   padding: 10px;
-  border-top: 1px solid #ccc;
+
   background: white;
+  border-top: 1px solid #ccc;
+  z-index: 10;
 }
 
 .chat-input input[type="text"] {
@@ -219,13 +228,12 @@ body {
 
 @media (max-width: 600px) {
   .chat-container {
-    height: 100dvh;  /* ✅ FULL SCREEN */
-    width: 100%;
-    border-radius: 0; /* like WhatsApp */
+    height: 100dvh;
+    border-radius: 0;
   }
 
   .chat-body {
-    align-items: stretch; /* remove center gap */
+    align-items: stretch;
   }
 }
 
