@@ -187,17 +187,33 @@ window.sendMessage = async function () {
   }
 };
 
-window.addEventListener("load", () => {
-  const chatInput = document.getElementById("chatInput");
-  if (chatInput) {
-    chatInput.addEventListener("keydown", function (e) {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        sendMessage();
-      }
+window.sendImage = async function () {
+  const fileInput = document.getElementById("fileInput");
+  const file = fileInput.files[0];
+  if (!file) return;
+
+  const user = auth.currentUser;
+  if (!user) return;
+
+  try {
+    const fileRef = ref(storage, `chat-images/${Date.now()}_${file.name}`);
+    const snapshot = await uploadBytes(fileRef, file);
+    const url = await getDownloadURL(snapshot.ref);
+
+    await addDoc(collection(db, "messages"), {
+      type: "image",
+      imageUrl: url,
+      email: user.email,
+      uid: user.uid,
+      createdAt: serverTimestamp()
     });
+
+    fileInput.value = "";
+    console.log("Image sent");
+  } catch (error) {
+    console.error("Image upload error:", error.code, error.message);
   }
-});
+};
 
 window.sendVideo = async function () {
   const videoInput = document.getElementById("videoInput");
@@ -270,6 +286,16 @@ function loadChat() {
 }
 
 window.addEventListener("load", () => {
+  const chatInput = document.getElementById("chatInput");
+  if (chatInput) {
+    chatInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  }
+
   const userEmail = document.getElementById("userEmail");
   if (userEmail) {
     onAuthStateChanged(auth, (user) => {
