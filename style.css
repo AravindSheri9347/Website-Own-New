@@ -90,8 +90,8 @@ body {
 .chat-container {
   width: 100%;
   max-width: 900px;   /* laptop view */
-  height: 100vh;
-  max-height: 85vh;
+  height: 90vh;
+  max-height: 95vh;
 
   display: flex;
   flex-direction: column;
