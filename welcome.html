@@ -16,9 +16,11 @@
     <div id="chatBox" class="chat-box"></div>
 
     <div class="chat-input">
-      <input type="text" id="chatInput" placeholder="Type message...">
-      <button onclick="sendMessage()">Send</button>
       <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="sendImage()">
+      <label for="fileInput" class="plus-icon">🖼️</label>
+
+      <input type="file" id="videoInput" accept="video/*" style="display:none" onchange="sendVideo()">
+      <label for="videoInput" class="plus-icon">🎥</label>
       <label for="fileInput" class="plus-icon">+</label>
       <input type="file" id="videoInput" accept="video/*" style="display:none" onchange="sendVideo()">
       <label for="videoInput" class="plus-icon">🎥</label>
