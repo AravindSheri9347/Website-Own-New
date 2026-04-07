@@ -181,6 +181,7 @@ window.sendImage = async function () {
     });
 
     fileInput.value = "";
+    console.log("Image sent");
   } catch (error) {
     console.error("Image upload error:", error);
   }
@@ -208,11 +209,11 @@ window.sendVideo = async function () {
     });
 
     videoInput.value = "";
+    console.log("Video sent");
   } catch (error) {
     console.error("Video upload error:", error);
   }
 };
-
 function loadChat() {
   const chatBox = document.getElementById("chatBox");
   if (!chatBox) return;
@@ -250,8 +251,6 @@ function loadChat() {
     });
 
     chatBox.scrollTop = chatBox.scrollHeight;
-  }, (error) => {
-    console.error("Chat load error:", error);
   });
 }
 window.addEventListener("load", () => {
