@@ -165,11 +165,19 @@ window.logoutUser = function () {
 
 window.sendMessage = async function () {
   const input = document.getElementById("chatInput");
+  if (!input) {
+    console.error("chatInput not found");
+    return;
+  }
+
   const text = input.value.trim();
   if (!text) return;
 
   const user = auth.currentUser;
-  if (!user) return;
+  if (!user) {
+    console.error("User not logged in");
+    return;
+  }
 
   try {
     await addDoc(collection(db, "messages"), {
@@ -186,35 +194,6 @@ window.sendMessage = async function () {
     console.error("Send message error:", error.code, error.message);
   }
 };
-
-window.sendImage = async function () {
-  const fileInput = document.getElementById("fileInput");
-  const file = fileInput.files[0];
-  if (!file) return;
-
-  const user = auth.currentUser;
-  if (!user) return;
-
-  try {
-    const fileRef = ref(storage, `chat-images/${Date.now()}_${file.name}`);
-    const snapshot = await uploadBytes(fileRef, file);
-    const url = await getDownloadURL(snapshot.ref);
-
-    await addDoc(collection(db, "messages"), {
-      type: "image",
-      imageUrl: url,
-      email: user.email,
-      uid: user.uid,
-      createdAt: serverTimestamp()
-    });
-
-    fileInput.value = "";
-    console.log("Image sent");
-  } catch (error) {
-    console.error("Image upload error:", error.code, error.message);
-  }
-};
-
 window.sendVideo = async function () {
   const videoInput = document.getElementById("videoInput");
   const file = videoInput.files[0];
