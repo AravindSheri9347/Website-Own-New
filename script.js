@@ -261,6 +261,55 @@ function loadChat() {
 
   const q = query(collection(db, "messages"), orderBy("createdAt", "asc"));
 
+  onSnapshot(q, (snapshot) => {
+    const currentUser = auth.currentUser;
+
+    chatBox.innerHTML = "";
+
+    snapshot.forEach((docSnap) => {
+      const msg = docSnap.data();
+
+      // ✅ TEXT MESSAGE
+      if (msg.type === "text") {
+        const div = document.createElement("div");
+
+        div.className =
+          currentUser && msg.uid === currentUser.uid
+            ? "message user"
+            : "message other";
+
+        div.textContent = msg.text || "";
+        chatBox.appendChild(div);
+      }
+
+      // ✅ IMAGE
+      if (msg.type === "image") {
+        const img = document.createElement("img");
+        img.src = msg.imageUrl;
+        img.className = "chat-image";
+        chatBox.appendChild(img);
+      }
+
+      // ✅ VIDEO
+      if (msg.type === "video") {
+        const video = document.createElement("video");
+        video.src = msg.videoUrl;
+        video.controls = true;
+        video.className = "chat-video";
+        chatBox.appendChild(video);
+      }
+    });
+
+    // 🔥 AUTO SCROLL TO LATEST MESSAGE
+    setTimeout(() => {
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }, 50);
+
+  }, (error) => {
+    console.error("Chat load error:", error);
+  });
+}
+
   window.sendMessage = async function () {
     const input = document.getElementById("chatInput");
 
