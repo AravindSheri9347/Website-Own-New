@@ -135,31 +135,24 @@ window.logoutUser = function () {
   });
 };
 
-window.sendImage = async function () {
-  const fileInput = document.getElementById("fileInput");
-  const file = fileInput.files[0];
-  if (!file) return;
+window.sendMessage = async function () {
+  const input = document.getElementById("chatInput");
+  const text = input.value.trim();
+  if (!text) return;
 
   const user = auth.currentUser;
   if (!user) return;
 
-  try {
-    const fileRef = ref(storage, `chat-images/${Date.now()}_${file.name}`);
-    await uploadBytes(fileRef, file);
-    const url = await getDownloadURL(fileRef);
+  await addDoc(collection(db, "messages"), {
+    type: "text",
+    text: text,
+    email: user.email,
+    uid: user.uid,
+    createdAt: serverTimestamp()
+  });
 
-    await addDoc(collection(db, "messages"), {
-      type: "image",
-      imageUrl: url,
-      email: user.email,
-      uid: user.uid,
-      createdAt: serverTimestamp()
-    });
-
-    fileInput.value = "";
-  } catch (error) {
-    console.error("Image upload error:", error);
-  }
+  input.value = "";
+  input.focus();
 };
 
 window.sendVideo = async function () {
