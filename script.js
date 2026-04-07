@@ -166,27 +166,22 @@ window.logoutUser = function () {
 window.sendMessage = async function () {
     const input = document.getElementById("chatInput");
 
-    // ❗ Check input exists
     if (!input) {
         console.error("chatInput not found");
         return;
     }
 
     const text = input.value.trim();
-
-    // ❗ Prevent empty message
     if (!text) return;
 
     const user = auth.currentUser;
+    if (!user) return;
 
-    // ❗ Check user logged in
-    if (!user) {
-        console.error("User not logged in");
-        return;
-    }
+    // ✅ CLEAR INPUT FIRST (KEY FIX)
+    input.value = "";
+    input.focus();
 
     try {
-        // ✅ Save message to Firestore
         await addDoc(collection(db, "messages"), {
             type: "text",
             text: text,
@@ -195,15 +190,71 @@ window.sendMessage = async function () {
             createdAt: serverTimestamp()
         });
 
-        // ✅ CLEAR INPUT (correct way)
-        input.value = "";
-
-        // ✅ Keep cursor active
-        input.focus();
-
     } catch (error) {
         console.error("Send message error:", error.code, error.message);
+
+        // ❗ Restore text if failed
+        input.value = text;
     }
+};
+
+window.sendImage = async function () {
+    const fileInput = document.getElementById("fileInput");
+    const file = fileInput.files[0];
+
+    if (!file) return;
+
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+        const img = new Image();
+
+        img.onload = async function () {
+
+            // ✅ Resize settings
+            const MAX_WIDTH = 300;
+            const scaleSize = MAX_WIDTH / img.width;
+
+            const canvas = document.createElement("canvas");
+            canvas.width = MAX_WIDTH;
+            canvas.height = img.height * scaleSize;
+
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            // ✅ Convert to compressed image
+            canvas.toBlob(async function (blob) {
+
+                try {
+                    const fileRef = ref(storage, `chat-images/${Date.now()}.jpg`);
+                    const snapshot = await uploadBytes(fileRef, blob);
+                    const url = await getDownloadURL(snapshot.ref);
+
+                    await addDoc(collection(db, "messages"), {
+                        type: "image",
+                        imageUrl: url,
+                        email: user.email,
+                        uid: user.uid,
+                        createdAt: serverTimestamp()
+                    });
+
+                    // ✅ Clear input
+                    fileInput.value = "";
+
+                } catch (error) {
+                    console.error("Image upload error:", error);
+                }
+
+            }, "image/jpeg", 0.7); // 70% quality
+        };
+
+        img.src = event.target.result;
+    };
+
+    reader.readAsDataURL(file);
 };
 
 window.sendVideo = async function () {
