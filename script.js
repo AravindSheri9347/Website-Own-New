@@ -73,86 +73,117 @@ window.checkLogin = async function () {
 };
 
 
-import { auth, db } from "./firebase.js";
+// import { auth, db } from "./firebase.js";
 
-import { createUserWithEmailAndPassword } 
-from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+// import { createUserWithEmailAndPassword } 
+// from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-import { setDoc, doc } 
-from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+// import { setDoc, doc } 
+// from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-window.registerUser = async function () {
+// window.registerUser = async function () {
 
-  const name = document.getElementById("regName").value.trim();
+//   const name = document.getElementById("regName").value.trim();
+//   const email = document.getElementById("regEmail").value.trim();
+//   const pass = document.getElementById("regPass").value.trim();
+//   const msg = document.getElementById("regMessage");
+
+//   // ✅ VALIDATION
+//   if (!name || !email || !pass) {
+//     msg.innerHTML = "Please fill all fields!";
+//     msg.style.color = "red";
+//     return;
+//   }
+
+//   try {
+//     // ✅ CREATE USER
+//     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+
+//     // ✅ SAVE USER DATA
+//     await setDoc(doc(db, "users", userCredential.user.uid), {
+//       name: name,
+//       email: email,
+//       uid: userCredential.user.uid
+//     });
+
+//     // ✅ SUCCESS MESSAGE
+//     msg.innerHTML = "Registration Successful! Redirecting to login...";
+//     msg.style.color = "green";
+
+//     // ✅ REDIRECT
+//     setTimeout(() => {
+//       window.location.href = "index.html";
+//     }, 1500);
+
+//   } catch (error) {
+
+//     console.log("Register Error:", error.code);
+
+//     // ❌ EMAIL EXISTS
+//     if (error.code === "auth/email-already-in-use") {
+//       msg.innerHTML = "User already registered! Redirecting to login...";
+//       msg.style.color = "orange";
+
+//       setTimeout(() => {
+//         window.location.href = "index.html";
+//       }, 1500);
+//     }
+
+//     // ❌ INVALID EMAIL
+//     else if (error.code === "auth/invalid-email") {
+//       msg.innerHTML = "Please enter a valid email!";
+//       msg.style.color = "red";
+//     }
+
+//     // ❌ WEAK PASSWORD
+//     else if (error.code === "auth/weak-password") {
+//       msg.innerHTML = "Password must be at least 6 characters!";
+//       msg.style.color = "red";
+//     }
+
+//     // ❌ NETWORK ERROR
+//     else if (error.code === "auth/network-request-failed") {
+//       msg.innerHTML = "Check your internet connection!";
+//       msg.style.color = "red";
+//     }
+
+//     // ❌ DEFAULT
+//     else {
+//       msg.innerHTML = "Something went wrong. Try again!";
+//       msg.style.color = "red";
+//     }
+//   }
+// };
+window.registerUser = function () {
   const email = document.getElementById("regEmail").value.trim();
-  const pass = document.getElementById("regPass").value.trim();
-  const msg = document.getElementById("regMessage");
+  const password = document.getElementById("regPass").value.trim();
+  const message = document.getElementById("regMessage");
 
-  // ✅ VALIDATION
-  if (!name || !email || !pass) {
-    msg.innerHTML = "Please fill all fields!";
-    msg.style.color = "red";
+  if (!email || !password) {
+    message.textContent = "Fill all fields.";
     return;
   }
 
-  try {
-    // ✅ CREATE USER
-    const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-
-    // ✅ SAVE USER DATA
-    await setDoc(doc(db, "users", userCredential.user.uid), {
-      name: name,
-      email: email,
-      uid: userCredential.user.uid
-    });
-
-    // ✅ SUCCESS MESSAGE
-    msg.innerHTML = "Registration Successful! Redirecting to login...";
-    msg.style.color = "green";
-
-    // ✅ REDIRECT
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 1500);
-
-  } catch (error) {
-
-    console.log("Register Error:", error.code);
-
-    // ❌ EMAIL EXISTS
-    if (error.code === "auth/email-already-in-use") {
-      msg.innerHTML = "User already registered! Redirecting to login...";
-      msg.style.color = "orange";
-
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      return addDoc(collection(db, "users"), {
+        uid: userCredential.user.uid,
+        email: userCredential.user.email,
+        createdAt: serverTimestamp()
+      });
+    })
+    .then(() => {
+      message.style.color = "green";
+      message.textContent = "Registered successfully. Redirecting to login...";
+      localStorage.removeItem("tempEmail");
       setTimeout(() => {
         window.location.href = "index.html";
       }, 1500);
-    }
-
-    // ❌ INVALID EMAIL
-    else if (error.code === "auth/invalid-email") {
-      msg.innerHTML = "Please enter a valid email!";
-      msg.style.color = "red";
-    }
-
-    // ❌ WEAK PASSWORD
-    else if (error.code === "auth/weak-password") {
-      msg.innerHTML = "Password must be at least 6 characters!";
-      msg.style.color = "red";
-    }
-
-    // ❌ NETWORK ERROR
-    else if (error.code === "auth/network-request-failed") {
-      msg.innerHTML = "Check your internet connection!";
-      msg.style.color = "red";
-    }
-
-    // ❌ DEFAULT
-    else {
-      msg.innerHTML = "Something went wrong. Try again!";
-      msg.style.color = "red";
-    }
-  }
+    })
+    .catch((error) => {
+      message.style.color = "red";
+      message.textContent = error.message;
+    });
 };
 
 window.resetPassword = function () {
