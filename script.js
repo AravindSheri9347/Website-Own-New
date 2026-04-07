@@ -164,35 +164,48 @@ window.logoutUser = function () {
 };
 
 window.sendMessage = async function () {
-  const input = document.getElementById("chatInput");
-  const text = input.value.trim();
-  if (!text) return;
+    const input = document.getElementById("chatInput");
 
-  const user = auth.currentUser;
-  if (!user) return;
+    // ❗ Check input exists
+    if (!input) {
+        console.error("chatInput not found");
+        return;
+    }
 
-  try {
-    await addDoc(collection(db, "messages"), {
-      type: "text",
-      text: text,
-      email: user.email,
-      uid: user.uid,
-      createdAt: serverTimestamp()
-    });
+    const text = input.value.trim();
 
-    // Multiple ways to force clear input
-    input.value = "";
-    input.innerHTML = "";
-    input.setAttribute("value", "");
-    
-    // Focus back
-    input.focus();
-    
-    console.log("Input cleared");
-  } catch (error) {
-    console.error("Send message error:", error.code, error.message);
-  }
+    // ❗ Prevent empty message
+    if (!text) return;
+
+    const user = auth.currentUser;
+
+    // ❗ Check user logged in
+    if (!user) {
+        console.error("User not logged in");
+        return;
+    }
+
+    try {
+        // ✅ Save message to Firestore
+        await addDoc(collection(db, "messages"), {
+            type: "text",
+            text: text,
+            email: user.email,
+            uid: user.uid,
+            createdAt: serverTimestamp()
+        });
+
+        // ✅ CLEAR INPUT (correct way)
+        input.value = "";
+
+        // ✅ Keep cursor active
+        input.focus();
+
+    } catch (error) {
+        console.error("Send message error:", error.code, error.message);
+    }
 };
+
 window.sendVideo = async function () {
   const videoInput = document.getElementById("videoInput");
   const file = videoInput.files[0];
