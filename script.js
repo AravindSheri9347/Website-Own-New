@@ -208,15 +208,17 @@ function loadChat() {
   if (!chatBox) return;
 
   const q = query(collection(db, "messages"), orderBy("createdAt", "asc"));
+
   onSnapshot(q, (snapshot) => {
     chatBox.innerHTML = "";
-    snapshot.forEach((doc) => {
-      const msg = doc.data();
+
+    snapshot.forEach((docSnap) => {
+      const msg = docSnap.data();
 
       if (msg.type === "text") {
         const div = document.createElement("div");
         div.className = msg.uid === auth.currentUser?.uid ? "message user" : "message other";
-        div.textContent = msg.text;
+        div.textContent = msg.text || "";
         chatBox.appendChild(div);
       }
 
@@ -224,7 +226,16 @@ function loadChat() {
         const img = document.createElement("img");
         img.src = msg.imageUrl;
         img.className = "chat-image";
+        img.alt = "chat image";
         chatBox.appendChild(img);
+      }
+
+      if (msg.type === "video") {
+        const video = document.createElement("video");
+        video.src = msg.videoUrl;
+        video.className = "chat-video";
+        video.controls = true;
+        chatBox.appendChild(video);
       }
     });
 
