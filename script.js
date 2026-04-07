@@ -71,36 +71,50 @@ window.checkLogin = async function () {
     messageBox.textContent = error.message;
   }
 };
-window.registerUser = function () {
-  const email = document.getElementById("regEmail").value.trim();
-  const password = document.getElementById("regPass").value.trim();
-  const message = document.getElementById("regMessage");
+import { auth, db } from "./firebase.js";
+import { createUserWithEmailAndPassword } 
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-  if (!email || !password) {
-    message.textContent = "Fill all fields.";
+import { setDoc, doc } 
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+window.registerUser = async function () {
+  const name = document.getElementById("regName").value.trim();
+  const email = document.getElementById("regEmail").value.trim();
+  const pass = document.getElementById("regPass").value.trim();
+  const msg = document.getElementById("regMessage");
+
+  // ❌ validation
+  if (!name || !email || !pass) {
+    msg.innerHTML = "Please fill all fields!";
+    msg.style.color = "red";
     return;
   }
 
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      return addDoc(collection(db, "users"), {
-        uid: userCredential.user.uid,
-        email: userCredential.user.email,
-        createdAt: serverTimestamp()
-      });
-    })
-    .then(() => {
-      message.style.color = "green";
-      message.textContent = "Registered successfully. Redirecting to login...";
-      localStorage.removeItem("tempEmail");
-      setTimeout(() => {
-        window.location.href = "index.html";
-      }, 1500);
-    })
-    .catch((error) => {
-      message.style.color = "red";
-      message.textContent = error.message;
+  try {
+    // ✅ CREATE USER
+    const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+
+    // ✅ SAVE NAME + EMAIL IN FIRESTORE
+    await setDoc(doc(db, "users", userCredential.user.uid), {
+      name: name,
+      email: email,
+      uid: userCredential.user.uid
     });
+
+    // ✅ SUCCESS MESSAGE
+    msg.innerHTML = "Registration Successful! Redirecting to login...";
+    msg.style.color = "green";
+
+    // ✅ REDIRECT
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 2000);
+
+  } catch (error) {
+    msg.innerHTML = error.message;
+    msg.style.color = "red";
+  }
 };
 
 window.resetPassword = function () {
