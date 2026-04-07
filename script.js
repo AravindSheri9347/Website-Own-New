@@ -309,6 +309,13 @@ function loadChat() {
     console.error("Chat load error:", error);
   });
 }
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    loadChat(); // ✅ start chat automatically
+  } else {
+    window.location.href = "index.html";
+  }
+});
 
   window.sendMessage = async function () {
     const input = document.getElementById("chatInput");
