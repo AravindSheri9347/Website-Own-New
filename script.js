@@ -42,37 +42,6 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-// window.checkLogin = function () {
-//   const email = document.getElementById("email").value.trim();
-//   const password = document.getElementById("password").value.trim();
-//   const message = document.getElementById("message");
-
-//   if (!email || !password) {
-//     message.textContent = "Please enter email and password.";
-//     return;
-//   }
-
-//   signInWithEmailAndPassword(auth, email, password)
-//     .then(() => {
-//       message.style.color = "green";
-//       message.textContent = "Login successful.";
-//       setTimeout(() => {
-//         window.location.href = "welcome.html";
-//       }, 1000);
-//     })
-//     .catch((error) => {
-//       message.style.color = "red";
-//       if (error.code === "auth/user-not-found") {
-//         localStorage.setItem("tempEmail", email);
-//         message.textContent = "User not found. Redirecting to Register...";
-//         setTimeout(() => {
-//           window.location.href = "Register.html";
-//         }, 1500);
-//       } else {
-//         message.textContent = error.message;
-//       }
-//     });
-// };
 window.checkLogin = async function () {
   const emailInput = document.getElementById("email");
   const passInput = document.getElementById("password");
@@ -292,42 +261,40 @@ function loadChat() {
 
   const q = query(collection(db, "messages"), orderBy("createdAt", "asc"));
 
-  onSnapshot(q, (snapshot) => {
-    chatBox.innerHTML = "";
+  window.sendMessage = async function () {
+    const input = document.getElementById("chatInput");
 
-    snapshot.forEach((docSnap) => {
-      const msg = docSnap.data();
+    if (!input) return;
 
-      if (msg.type === "text") {
-        const div = document.createElement("div");
-        div.className = msg.uid === auth.currentUser?.uid ? "message user" : "message other";
-        div.textContent = msg.text || "";
-        chatBox.appendChild(div);
-      }
+    const text = input.value.trim();
+    if (!text) return;
 
-      if (msg.type === "image") {
-        const img = document.createElement("img");
-        img.src = msg.imageUrl;
-        img.className = "chat-image";
-        img.alt = "chat image";
-        chatBox.appendChild(img);
-      }
+    const user = auth.currentUser;
+    if (!user) return;
 
-      if (msg.type === "video") {
-        const video = document.createElement("video");
-        video.src = msg.videoUrl;
-        video.controls = true;
-        video.className = "chat-video";
-        chatBox.appendChild(video);
-      }
-    });
+    // ✅ CLEAR INPUT FIRST
+    input.value = "";
+    input.focus();
 
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }, (error) => {
-    console.error("Chat load error:", error);
-  });
-}
+    try {
+        await addDoc(collection(db, "messages"), {
+            type: "text",
+            text: text,
+            email: user.email,
+            uid: user.uid,
+            createdAt: serverTimestamp()
+        });
 
+        // ✅ INSTANT SCROLL (fallback)
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+    } catch (error) {
+        console.error("Send error:", error);
+
+        // restore text if failed
+        input.value = text;
+    }
+};
 window.addEventListener("load", () => {
   // Enter key listener
   const chatInput = document.getElementById("chatInput");
