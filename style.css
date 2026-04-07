@@ -177,12 +177,12 @@ body {
 
 /* CHAT IMAGE */
 .chat-image {
-    max-width: 150px;
-    border-radius: 10px;
-    margin: 5px;
-    align-self: flex-start;
+  max-width: 200px;
+  max-height: 250px;
+  border-radius: 10px;
+  margin: 5px;
+  display: block;
 }
-
 /* MESSAGE AREA TEXT */
 #message,
 #regMessage,
