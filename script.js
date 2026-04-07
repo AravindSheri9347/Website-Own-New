@@ -259,6 +259,7 @@ function loadChat() {
 }
 
 window.addEventListener("load", () => {
+  // Enter key listener
   const chatInput = document.getElementById("chatInput");
   if (chatInput) {
     chatInput.addEventListener("keydown", function (e) {
@@ -269,6 +270,7 @@ window.addEventListener("load", () => {
     });
   }
 
+  // Auth state listener
   const userEmail = document.getElementById("userEmail");
   if (userEmail) {
     onAuthStateChanged(auth, (user) => {
