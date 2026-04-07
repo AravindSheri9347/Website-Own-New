@@ -143,16 +143,20 @@ window.sendMessage = async function () {
   const user = auth.currentUser;
   if (!user) return;
 
-  await addDoc(collection(db, "messages"), {
-    type: "text",
-    text: text,
-    email: user.email,
-    uid: user.uid,
-    createdAt: serverTimestamp()
-  });
+  try {
+    await addDoc(collection(db, "messages"), {
+      type: "text",
+      text: text,
+      email: user.email,
+      uid: user.uid,
+      createdAt: serverTimestamp()
+    });
 
-  input.value = "";
-  input.focus();
+    input.value = "";
+    input.focus();
+  } catch (error) {
+    console.error("Send message error:", error);
+  }
 };
 
 window.addEventListener("load", () => {
@@ -226,6 +230,8 @@ function loadChat() {
     });
 
     chatBox.scrollTop = chatBox.scrollHeight;
+  }, (error) => {
+    console.error("Chat load error:", error);
   });
 }
 
