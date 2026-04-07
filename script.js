@@ -135,28 +135,6 @@ window.logoutUser = function () {
   });
 };
 
-window.sendMessage = async function () {
-  const input = document.getElementById("chatInput");
-  const text = input.value.trim();
-  if (!text) return;
-
-  const user = auth.currentUser;
-  if (!user) {
-    window.location.href = "index.html";
-    return;
-  }
-
-  await addDoc(collection(db, "messages"), {
-    type: "text",
-    text: text,
-    email: user.email,
-    uid: user.uid,
-    createdAt: serverTimestamp()
-  });
-
-  input.value = "";
-};
-
 window.sendImage = async function () {
   const fileInput = document.getElementById("fileInput");
   const file = fileInput.files[0];
@@ -165,19 +143,23 @@ window.sendImage = async function () {
   const user = auth.currentUser;
   if (!user) return;
 
-  const fileRef = ref(storage, `chat-images/${Date.now()}_${file.name}`);
-  await uploadBytes(fileRef, file);
-  const url = await getDownloadURL(fileRef);
+  try {
+    const fileRef = ref(storage, `chat-images/${Date.now()}_${file.name}`);
+    await uploadBytes(fileRef, file);
+    const url = await getDownloadURL(fileRef);
 
-  await addDoc(collection(db, "messages"), {
-    type: "image",
-    imageUrl: url,
-    email: user.email,
-    uid: user.uid,
-    createdAt: serverTimestamp()
-  });
+    await addDoc(collection(db, "messages"), {
+      type: "image",
+      imageUrl: url,
+      email: user.email,
+      uid: user.uid,
+      createdAt: serverTimestamp()
+    });
 
-  fileInput.value = "";
+    fileInput.value = "";
+  } catch (error) {
+    console.error("Image upload error:", error);
+  }
 };
 
 window.sendVideo = async function () {
@@ -188,19 +170,23 @@ window.sendVideo = async function () {
   const user = auth.currentUser;
   if (!user) return;
 
-  const fileRef = ref(storage, `chat-videos/${Date.now()}_${file.name}`);
-  await uploadBytes(fileRef, file);
-  const url = await getDownloadURL(fileRef);
+  try {
+    const fileRef = ref(storage, `chat-videos/${Date.now()}_${file.name}`);
+    await uploadBytes(fileRef, file);
+    const url = await getDownloadURL(fileRef);
 
-  await addDoc(collection(db, "messages"), {
-    type: "video",
-    videoUrl: url,
-    email: user.email,
-    uid: user.uid,
-    createdAt: serverTimestamp()
-  });
+    await addDoc(collection(db, "messages"), {
+      type: "video",
+      videoUrl: url,
+      email: user.email,
+      uid: user.uid,
+      createdAt: serverTimestamp()
+    });
 
-  videoInput.value = "";
+    videoInput.value = "";
+  } catch (error) {
+    console.error("Video upload error:", error);
+  }
 };
 
 function loadChat() {
@@ -233,8 +219,8 @@ function loadChat() {
       if (msg.type === "video") {
         const video = document.createElement("video");
         video.src = msg.videoUrl;
-        video.className = "chat-video";
         video.controls = true;
+        video.className = "chat-video";
         chatBox.appendChild(video);
       }
     });
