@@ -169,8 +169,8 @@ window.sendImage = async function () {
 
   try {
     const fileRef = ref(storage, `chat-images/${Date.now()}_${file.name}`);
-    await uploadBytes(fileRef, file);
-    const url = await getDownloadURL(fileRef);
+    const snapshot = await uploadBytes(fileRef, file);
+    const url = await getDownloadURL(snapshot.ref);
 
     await addDoc(collection(db, "messages"), {
       type: "image",
@@ -183,10 +183,9 @@ window.sendImage = async function () {
     fileInput.value = "";
     console.log("Image sent");
   } catch (error) {
-    console.error("Image upload error:", error);
+    console.error("Image upload error:", error.code, error.message);
   }
 };
-
 window.sendVideo = async function () {
   const videoInput = document.getElementById("videoInput");
   const file = videoInput.files[0];
@@ -197,8 +196,8 @@ window.sendVideo = async function () {
 
   try {
     const fileRef = ref(storage, `chat-videos/${Date.now()}_${file.name}`);
-    await uploadBytes(fileRef, file);
-    const url = await getDownloadURL(fileRef);
+    const snapshot = await uploadBytes(fileRef, file);
+    const url = await getDownloadURL(snapshot.ref);
 
     await addDoc(collection(db, "messages"), {
       type: "video",
@@ -211,7 +210,7 @@ window.sendVideo = async function () {
     videoInput.value = "";
     console.log("Video sent");
   } catch (error) {
-    console.error("Video upload error:", error);
+    console.error("Video upload error:", error.code, error.message);
   }
 };
 function loadChat() {
@@ -237,10 +236,9 @@ function loadChat() {
         const img = document.createElement("img");
         img.src = msg.imageUrl;
         img.className = "chat-image";
-        img.alt = "chat image";
         chatBox.appendChild(img);
       }
-
+      
       if (msg.type === "video") {
         const video = document.createElement("video");
         video.src = msg.videoUrl;
@@ -248,7 +246,6 @@ function loadChat() {
         video.className = "chat-video";
         chatBox.appendChild(video);
       }
-    });
 
     chatBox.scrollTop = chatBox.scrollHeight;
   });
