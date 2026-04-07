@@ -135,30 +135,6 @@ window.logoutUser = function () {
   });
 };
 
-window.sendMessage = async function () {
-  const input = document.getElementById("chatInput");
-  const text = input.value.trim();
-  if (!text) return;
-
-  const user = auth.currentUser;
-  if (!user) return;
-
-  try {
-    await addDoc(collection(db, "messages"), {
-      type: "text",
-      text: text,
-      email: user.email,
-      uid: user.uid,
-      createdAt: serverTimestamp()
-    });
-
-    input.value = "";
-    input.focus();
-  } catch (error) {
-    console.error("Send message error:", error);
-  }
-};
-
 window.sendImage = async function () {
   const fileInput = document.getElementById("fileInput");
   const file = fileInput.files[0];
@@ -186,6 +162,7 @@ window.sendImage = async function () {
     console.error("Image upload error:", error.code, error.message);
   }
 };
+
 window.sendVideo = async function () {
   const videoInput = document.getElementById("videoInput");
   const file = videoInput.files[0];
@@ -213,6 +190,7 @@ window.sendVideo = async function () {
     console.error("Video upload error:", error.code, error.message);
   }
 };
+
 function loadChat() {
   const chatBox = document.getElementById("chatBox");
   if (!chatBox) return;
@@ -236,9 +214,10 @@ function loadChat() {
         const img = document.createElement("img");
         img.src = msg.imageUrl;
         img.className = "chat-image";
+        img.alt = "chat image";
         chatBox.appendChild(img);
       }
-      
+
       if (msg.type === "video") {
         const video = document.createElement("video");
         video.src = msg.videoUrl;
@@ -246,10 +225,14 @@ function loadChat() {
         video.className = "chat-video";
         chatBox.appendChild(video);
       }
+    });
 
     chatBox.scrollTop = chatBox.scrollHeight;
+  }, (error) => {
+    console.error("Chat load error:", error);
   });
 }
+
 window.addEventListener("load", () => {
   const userEmail = document.getElementById("userEmail");
   if (userEmail) {
