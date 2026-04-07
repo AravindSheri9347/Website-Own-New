@@ -155,6 +155,13 @@ window.sendMessage = async function () {
   input.focus();
 };
 
+window.addEventListener("load", () => {
+  const chatInput = document.getElementById("chatInput");
+  if (chatInput) {
+    chatInput.value = "";
+  }
+});
+
 window.sendVideo = async function () {
   const videoInput = document.getElementById("videoInput");
   const file = videoInput.files[0];
