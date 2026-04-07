@@ -111,36 +111,44 @@ window.registerUser = async function () {
       window.location.href = "index.html";
     }, 2000);
 
-  } catch (error) {
+} catch (error) {
 
-    // ❌ EMAIL ALREADY EXISTS
-    if (error.code === "auth/email-already-in-use") {
-      msg.innerHTML = "User already registered! Redirecting to login...";
-      msg.style.color = "orange";
-  
-      setTimeout(() => {
-        window.location.href = "index.html";
-      }, 2000);
-    }
-  
-    // ❌ INVALID EMAIL
-    else if (error.code === "auth/invalid-email") {
-      msg.innerHTML = "Invalid email format!";
-      msg.style.color = "red";
-    }
-  
-    // ❌ WEAK PASSWORD
-    else if (error.code === "auth/weak-password") {
-      msg.innerHTML = "Password must be at least 6 characters!";
-      msg.style.color = "red";
-    }
-  
-    // ❌ OTHER ERRORS
-    else {
-      msg.innerHTML = error.message;
-      msg.style.color = "red";
-    }
+  console.log("Register Error:", error.code); // 🔍 debug
+
+  // ❌ EMAIL ALREADY EXISTS
+  if (error.code === "auth/email-already-in-use") {
+    msg.innerHTML = "User already registered! Redirecting to login...";
+    msg.style.color = "orange";
+
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 1500);
   }
+
+  // ❌ INVALID EMAIL
+  else if (error.code === "auth/invalid-email") {
+    msg.innerHTML = "Please enter a valid email!";
+    msg.style.color = "red";
+  }
+
+  // ❌ WEAK PASSWORD
+  else if (error.code === "auth/weak-password") {
+    msg.innerHTML = "Password must be at least 6 characters!";
+    msg.style.color = "red";
+  }
+
+  // ❌ NETWORK / INTERNET ERROR
+  else if (error.code === "auth/network-request-failed") {
+    msg.innerHTML = "Check your internet connection!";
+    msg.style.color = "red";
+  }
+
+  // ❌ DEFAULT ERROR
+  else {
+    msg.innerHTML = "Something went wrong. Try again!";
+    msg.style.color = "red";
+  }
+}
 };
 
 window.resetPassword = function () {
