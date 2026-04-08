@@ -3,16 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Forgot Password</title>
+  <title>Reset Password</title>
   <link rel="stylesheet" href="style.css">
+
+  <style>
+    body { visibility: hidden; }
+  </style>
 </head>
+
 <body>
+
   <div class="login-container">
     <h1>Reset Password</h1>
+
     <input type="email" id="fpEmail" placeholder="Enter your email">
-    <button class="register-btn" onclick="resetPassword()">Send Reset Link</button>
+
+    <button id="resetBtn">Send Reset Email</button>
+
     <p id="fpMessage"></p>
+
+    <a href="index.html">Back to Login</a>
   </div>
+
   <script type="module" src="script.js"></script>
+
 </body>
 </html>
