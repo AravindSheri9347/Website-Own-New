@@ -3,29 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register Page</title>
+  <title>Register</title>
   <link rel="stylesheet" href="style.css">
+
+  <style>
+    body { visibility: hidden; }
+  </style>
 </head>
+
 <body>
+
   <div class="login-container">
     <h1>Register</h1>
 
-    <!-- ✅ NAME -->
-    <input type="text" id="regName" placeholder="Enter Name">
-
-    <!-- ✅ EMAIL -->
     <input type="email" id="regEmail" placeholder="Enter Email">
-
-    <!-- ✅ PASSWORD -->
     <input type="password" id="regPass" placeholder="Enter Password">
 
-    <!-- ✅ BUTTON -->
-    <button class="register-btn" onclick="registerUser()">REGISTER</button>
+    <button id="registerBtn">Register</button>
 
-    <!-- ✅ MESSAGE -->
     <p id="regMessage"></p>
+
+    <a href="index.html">Back to Login</a>
   </div>
 
   <script type="module" src="script.js"></script>
+
 </body>
 </html>
