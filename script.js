@@ -288,6 +288,11 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
+const imageBtn = document.getElementById("imageBtn");
+if (imageBtn) imageBtn.addEventListener("click", sendImage);
+
+const sendBtn = document.getElementById("sendBtn");
+if (sendBtn) sendBtn.addEventListener("click", sendMessage);
 
 // ================= EVENTS =================
 document.addEventListener("DOMContentLoaded", () => {
