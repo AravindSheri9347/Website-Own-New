@@ -29,5 +29,5 @@ window.login = async function () {
 
   await signInWithEmailAndPassword(auth, email, password);
 
-  window.location.href = "chat.html";
+  window.location.href = "welcome.html";
 };
