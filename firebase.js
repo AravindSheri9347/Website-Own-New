@@ -5,10 +5,7 @@
 
 // // Your config (copy from Firebase console)
 // const firebaseConfig = {
-//   apiKey: "AIzaSyB5RPmnslaA3mXVIPxapx7YMfLSp6wlA6A",
-//   authDomain: "chitchat-1a684.firebaseapp.com",
-//   projectId: "chitchat-1a684",
-// };
+//   
 
 // // Initialize
 // const app = initializeApp(firebaseConfig);
