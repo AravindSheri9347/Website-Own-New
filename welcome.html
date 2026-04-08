@@ -3,45 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat Page</title>
+  <title>Chat</title>
   <link rel="stylesheet" href="style.css">
+
+  <style>
+    body { visibility: hidden; }
+  </style>
 </head>
 
-<body class="chat-body">
+<body>
 
   <div class="chat-container">
 
-    <!-- HEADER -->
     <div class="chat-header">
-      Welcome <span id="userEmail"></span> 👋
-      <button class="logout-btn" onclick="logoutUser()">Logout</button>
+      <h2>Chat App</h2>
+      <button id="logoutBtn">Logout</button>
     </div>
 
-    <!-- CHAT AREA -->
     <div id="chatBox" class="chat-box"></div>
 
-    <!-- INPUT AREA -->
-    <div class="chat-input">
+    <div class="chat-input-area">
+      <input type="text" id="chatInput" placeholder="Type a message...">
 
-      <!-- TEXT -->
-      <input type="text" id="chatInput" placeholder="Type message...">
+      <input type="file" id="fileInput" accept="image/*">
+      <button onclick="sendImage()">📷</button>
 
-      <!-- SEND -->
-      <button type="button" onclick="sendMessage()">Send</button>
-
-      <!-- IMAGE -->
-      <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="sendImage()">
-      <label for="fileInput" class="plus-icon">+</label>
-
-      <!-- VIDEO -->
-      <input type="file" id="videoInput" accept="video/*" style="display:none" onchange="sendVideo()">
-      <label for="videoInput" class="plus-icon">🎥</label>
-
+      <button id="sendBtn">Send</button>
     </div>
 
   </div>
 
-  <!-- SCRIPT -->
   <script type="module" src="script.js"></script>
 
 </body>
