@@ -43,11 +43,16 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 
 window.checkLogin = async function () {
+  console.log("Login clicked"); // ✅ DEBUG
+
   const emailInput = document.getElementById("email");
   const passInput = document.getElementById("password");
   const messageBox = document.getElementById("message");
 
-  if (!emailInput || !passInput || !messageBox) return;
+  if (!emailInput || !passInput || !messageBox) {
+    console.log("Elements not found");
+    return;
+  }
 
   const email = emailInput.value.trim();
   const password = passInput.value.trim();
@@ -58,20 +63,26 @@ window.checkLogin = async function () {
   }
 
   try {
+    // 🔥 LOGIN
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+    console.log("Login success:", userCredential.user.email);
+
     localStorage.setItem("currentUser", userCredential.user.email);
+
     messageBox.style.color = "green";
     messageBox.textContent = "Login successful.";
-    setTimeout(() => {
-      window.location.href = "welcome.html";
-    }, 1000);
+
+    // ✅ IMPORTANT CHANGE
+    window.location.replace("welcome.html");
+
   } catch (error) {
     console.error("Login error:", error.code, error.message);
+
     messageBox.style.color = "red";
     messageBox.textContent = error.message;
   }
 };
-
 
 import { auth, db, storage } from "./firebase.js";
 
