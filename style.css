@@ -1,254 +1,32 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
-
 body {
-    background-color: lightblue;
-    min-height: 100vh;
-}
-
-/* LOGIN / REGISTER / FORGOT */
-.login-container {
-    background-color: lightgreen;
-    padding: 40px;
-    border-radius: 10px;
-    text-align: center;
-    width: 340px;
-    margin: 80px auto;
-}
-
-.login-container h1 {
-    margin-bottom: 20px;
-}
-
-.login-container input {
-    width: 100%;
-    padding: 15px;
-    margin-bottom: 20px;
-    border: 2px solid black;
-    border-radius: 5px;
-    outline: none;
-}
-
-.login-btn,
-.register-btn {
-    width: 100%;
-    padding: 12px;
-    background-color: green;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 5px;
-}
-
-.login-btn:hover,
-.register-btn:hover {
-    background-color: darkgreen;
-}
-
-.register-text {
-    color: red;
-    margin-top: 15px;
-    cursor: pointer;
-    font-weight: bold;
-    text-align: center;
-    display: inline-block;
-    text-decoration: none;
-}
-
-.register-text:hover,
-.forgot-text:hover {
-    text-decoration: underline;
-}
-
-.forgot-text {
-    color: red;
-    cursor: pointer;
-    margin-top: -10px;
-    margin-bottom: 10px;
-    font-size: 14px;
-}
-
-/* CHAT PAGE BACKGROUND */
-/* BODY */
-.chat-body {
-  margin: 0;
-  padding: 0;
-  background: lightpink;
-
-  height: 100dvh; /* ✅ FIX (dynamic height) */
-
+  font-family: Arial;
+  background: #0b141a;
+  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100vh;
 }
 
-/* CHAT CONTAINER */
-.chat-container {
+.container {
+  background: #202c33;
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+}
+
+input {
   width: 100%;
-  max-width: 900px;
-  height: 100dvh;
-
-  display: flex;
-  flex-direction: column;
-
-  background: white;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-/* HEADER */
-.chat-header {
-    background-color: deeppink;
-    color: white;
-    padding: 15px;
-    text-align: center;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* CHAT BOX */
-.chat-box {
-  flex: 1;
-  overflow-y: auto;
   padding: 10px;
-
-  /* 👇 important */
-  display: flex;
-  flex-direction: column;
+  margin: 5px 0;
 }
 
-/* MESSAGES */
-.message {
-    padding: 10px;
-    margin: 5px;
-    border-radius: 10px;
-    max-width: 70%;
-    word-wrap: break-word;
-}
-
-.message.user {
-    background-color: lightblue;
-    align-self: flex-end;
-}
-
-.message.other {
-    background-color: lightgray;
-    align-self: flex-start;
-}
-/*chat input  */
-.chat-input {
-  position: sticky;
-  bottom: 0;
-
-  display: flex;
-  align-items: center;
+button {
+  width: 100%;
   padding: 10px;
-
-  background: white;
-  border-top: 1px solid #ccc;
-  z-index: 10;
-}
-
-.chat-input input[type="text"] {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.chat-input button {
-    padding: 10px 14px;
-    background-color: deeppink;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.chat-input button:hover {
-    background-color: #c2185b;
-}
-
-/* PLUS ICON */
-.plus-icon {
-    font-size: 28px;
-    color: blue;
-    cursor: pointer;
-    padding: 8px;
-    font-weight: bold;
-    user-select: none;
-}
-
-/* CHAT IMAGE */
-.chat-image {
-  max-width: 200px;
-  max-height: 250px;
-  border-radius: 10px;
-  margin: 5px;
-  display: block;
-}
-/* MESSAGE AREA TEXT */
-#message,
-#regMessage,
-#fpMessage {
-    margin-top: 10px;
-    font-size: 14px;
-    color: red;
-}
-
-/* LOGOUT BUTTON */
-.logout-btn {
-    padding: 8px 12px;
-    background-color: white;
-    color: deeppink;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.logout-btn:hover {
-    background-color: #ffe6f3;
-}
-
-.chat-video {
-  max-width: 250px;
-  border-radius: 10px;
-  margin: 5px;
-  display: block;
-}
-
-@media (max-width: 600px) {
-  .chat-container {
-    height: 100dvh;
-    border-radius: 0;
-  }
-
-  .chat-body {
-    align-items: stretch;
-  }
-}
-
-/* 💻 TABLET */
-@media (min-width: 601px) and (max-width: 1024px) {
-  .chat-container {
-    width: 95%;
-    height: 95vh;
-  }
-}
-
-/* 🖥️ LARGE SCREEN */
-@media (min-width: 1025px) {
-  .chat-container {
-    width: 70%;
-    height: 90vh;
-  }
+  margin-top: 10px;
+  background: #25d366;
+  border: none;
+  color: white;
+  cursor: pointer;
 }
