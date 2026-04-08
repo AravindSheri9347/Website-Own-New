@@ -43,80 +43,8 @@ const db = getFirestore(app);
 const storage = getStorage(app);
 
 window.checkLogin = async function () {
-  console.log("Login clicked"); // ✅ DEBUG
+  console.log("Login clicked");
 
-  const emailInput = document.getElementById("email");
-  const passInput = document.getElementById("password");
-  const messageBox = document.getElementById("message");
-
-  if (!emailInput || !passInput || !messageBox) {
-    console.log("Elements not found");
-    return;
-  }
-
-  const email = emailInput.value.trim();
-  const password = passInput.value.trim();
-
-  if (!email || !password) {
-    messageBox.textContent = "Please enter email and password.";
-    return;
-  }
-
-  try {
-    // 🔥 LOGIN
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
-    console.log("Login success:", userCredential.user.email);
-
-    localStorage.setItem("currentUser", userCredential.user.email);
-
-    messageBox.style.color = "green";
-    messageBox.textContent = "Login successful.";
-
-    // ✅ IMPORTANT CHANGE
-    window.location.replace("welcome.html");
-
-  } catch (error) {
-    console.error("Login error:", error.code, error.message);
-
-    messageBox.style.color = "red";
-    messageBox.textContent = error.message;
-  }
-};
-
-import { auth, db, storage } from "./firebase.js";
-
-// 🔥 Firebase imports
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  sendPasswordResetEmail,
-  signOut,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-import {
-  addDoc,
-  collection,
-  serverTimestamp,
-  onSnapshot,
-  query,
-  orderBy
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
-
-
-// ✅ PREVENT BLINK (VERY IMPORTANT)
-document.body.style.display = "none";
-
-
-// ================= LOGIN =================
-window.checkLogin = async function () {
   const email = document.getElementById("email")?.value.trim();
   const password = document.getElementById("password")?.value.trim();
   const msg = document.getElementById("message");
@@ -132,16 +60,14 @@ window.checkLogin = async function () {
     msg.style.color = "green";
     msg.textContent = "Login successful";
 
-    setTimeout(() => {
-      window.location.replace("welcome.html");
-    }, 800);
+    window.location.replace("welcome.html");
 
   } catch (error) {
+    console.error(error);
     msg.style.color = "red";
     msg.textContent = error.message;
   }
 };
-
 
 // ================= REGISTER =================
 window.registerUser = async function () {
@@ -323,6 +249,14 @@ onAuthStateChanged(auth, (user) => {
     document.body.style.display = "block";
   }
 
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("loginBtn");
+
+  if (btn) {
+    btn.addEventListener("click", checkLogin);
+  }
 });
 
 
