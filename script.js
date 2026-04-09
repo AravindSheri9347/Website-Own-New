@@ -32,14 +32,42 @@ window.register = async function () {
   window.location.href = "index.html";
 };
 
-// LOGIN
+// log in function //
 window.login = async function () {
   const email = document.getElementById("loginEmail").value;
   const password = document.getElementById("loginPassword").value;
+  const msg = document.getElementById("loginMessage");
 
-  await signInWithEmailAndPassword(auth, email, password);
+  msg.innerText = ""; // clear old message
 
-  window.location.href = "welcome.html";
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+
+    msg.style.color = "green";
+    msg.innerText = "✅ Login successful";
+
+    // redirect after 1 second
+    setTimeout(() => {
+      window.location.href = "welcome.html";
+    }, 1000);
+
+  } catch (error) {
+
+    msg.style.color = "red";
+
+    if (error.code === "auth/user-not-found") {
+      msg.innerText = "❌ Email not found. Please check or register.";
+    } 
+    else if (error.code === "auth/wrong-password") {
+      msg.innerText = "❌ Incorrect password.";
+    } 
+    else if (error.code === "auth/invalid-email") {
+      msg.innerText = "❌ Invalid email format.";
+    } 
+    else {
+      msg.innerText = "❌ " + error.message;
+    }
+  }
 };
 
 // RESET PASSWORD
