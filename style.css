@@ -113,3 +113,22 @@ p {
   background: #25d366;
   color: black;
 }
+
+.myMsg {
+  background: #dcf8c6;
+  padding: 8px;
+  margin: 5px;
+  border-radius: 10px;
+  max-width: 60%;
+  margin-left: auto;
+  text-align: right;
+}
+
+.otherMsg {
+  background: #ffffff;
+  padding: 8px;
+  margin: 5px;
+  border-radius: 10px;
+  max-width: 60%;
+  text-align: left;
+}
