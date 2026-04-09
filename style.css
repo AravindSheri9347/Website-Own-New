@@ -52,6 +52,8 @@ p {
 }
 
 #loginMessage {
-  font-size: 14px;
+  margin-top: 10px;
   text-align: center;
+  font-weight: bold;
+  min-height: 20px; /* IMPORTANT: keeps space visible */
 }
