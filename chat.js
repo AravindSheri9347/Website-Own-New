@@ -179,8 +179,32 @@ function loadMessages() {
   );
 }
 
-// 🚪 LOGOUT
+// 🚪 LOGOUT FUNCTION
 window.logout = function () {
   auth.signOut();
   window.location.href = "index.html";
 };
+
+
+// ✅ DOM READY EVENTS (SAFE LISTENERS)
+window.addEventListener("DOMContentLoaded", () => {
+
+  // 🔍 SEARCH BAR (INSTANT SEARCH)
+  const searchBox = document.getElementById("searchInput");
+  if (searchBox) {
+    searchBox.addEventListener("keyup", () => {
+      searchUser();
+    });
+  }
+
+  // ⌨️ ENTER KEY TO SEND MESSAGE
+  const msgBox = document.getElementById("msg");
+  if (msgBox) {
+    msgBox.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        sendMsg();
+      }
+    });
+  }
+
+});
