@@ -143,3 +143,8 @@ p {
   width: fit-content;
   word-wrap: break-word;
 }
+
+#chatWith {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
