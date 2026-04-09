@@ -85,16 +85,26 @@ p {
   cursor: pointer;
 }
 
-/* Chat area */
 .chat-area {
   width: 70%;
   padding: 10px;
+  background: #ffc0cb; /* LIGHT PINK */
 }
 
 #messages {
   height: 300px;
   overflow-y: scroll;
-  background: #0b141a;
+  background: #ffe4e1; /* soft pink inside */
   margin-bottom: 10px;
   padding: 10px;
+  border-radius: 5px;
+}
+
+#messages div {
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 10px;
+  background: white;
+  color: black;
+  max-width: 70%;
 }
