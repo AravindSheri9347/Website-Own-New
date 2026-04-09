@@ -28,9 +28,12 @@ window.register = async function () {
     const user = await createUserWithEmailAndPassword(auth, email, password);
 
     await setDoc(doc(db, "users", user.user.uid), {
-      name,
-      email,
-      uid: user.user.uid
+      name: name,
+      email: email,
+      uid: user.user.uid,
+      online: true,
+      typing: false,
+      lastSeen: new Date()
     });
 
     msg.style.color = "green";
