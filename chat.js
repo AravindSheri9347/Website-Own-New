@@ -53,27 +53,42 @@ async function loadUsers() {
 
 // 🔍 SEARCH USER
 window.searchUser = async function () {
-  const value = document.getElementById("searchInput").value.toLowerCase();
+  const value = document.getElementById("searchInput").value.toLowerCase().trim();
   const userList = document.getElementById("userList");
+
   userList.innerHTML = "";
+
+  if (!value) {
+    loadUsers(); // show all if empty
+    return;
+  }
 
   const snapshot = await getDocs(collection(db, "users"));
 
   snapshot.forEach(doc => {
     const data = doc.data();
 
+    // 🔥 FIX: safe check for undefined + proper matching
+    const name = (data.name || "").toLowerCase();
+    const email = (data.email || "").toLowerCase();
+
     if (
       data.uid !== currentUser.uid &&
-      (data.name.toLowerCase().includes(value) ||
-       data.email.toLowerCase().includes(value))
+      (name.includes(value) || email.includes(value))
     ) {
       const div = document.createElement("div");
-      div.innerText = data.name + " (" + data.email + ")";
+      div.innerText = `${data.name} (${data.email})`;
+
       div.onclick = () => selectUser(data);
 
       userList.appendChild(div);
     }
   });
+
+  // ❗ If no user found
+  if (userList.innerHTML === "") {
+    userList.innerHTML = "<p style='color:red;'>No user found</p>";
+  }
 };
 
 // 👤 SELECT USER
