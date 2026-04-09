@@ -3,6 +3,8 @@
 let allUsers = [];
 let unsubscribeMessages = null;
 
+import { onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
 import { app } from "./firebase.js";
 import { query, orderBy } 
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -22,11 +24,19 @@ let currentUser = null;
 let selectedUser = null;
 
 // 🔐 AUTH STATE
+import { updateDoc, doc } 
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     currentUser = user;
 
-    // ✅ Get logged-in user name (optimized)
+    // ✅ 🔥 ADD THIS PART (ONLINE STATUS)
+    await updateDoc(doc(db, "users", user.uid), {
+      online: true
+    });
+
+    // ✅ Get logged-in user name (existing)
     const userDoc = await getDoc(doc(db, "users", user.uid));
     if (userDoc.exists()) {
       document.getElementById("userName").innerText =
@@ -34,11 +44,21 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     loadUsers();
+
   } else {
     window.location.href = "index.html";
   }
 });
 
+// offline status
+window.addEventListener("beforeunload", async () => {
+  if (currentUser) {
+    await updateDoc(doc(db, "users", currentUser.uid), {
+      online: false,
+      lastSeen: new Date()
+    });
+  }
+});
 
 // 🔍 LOAD USERS (ONLY ONCE)
 async function loadUsers() {
@@ -106,12 +126,20 @@ window.searchUser = function () {
 function selectUser(user) {
   selectedUser = user;
 
+  let status = user.online
+    ? "🟢 Online"
+    : user.lastSeen
+      ? "Last seen: " + new Date(user.lastSeen).toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit"
+        })
+      : "Offline";
+
   document.getElementById("chatWith").innerText =
-    "Chat with " + user.name;
+    user.name + " - " + status;
 
   loadMessages();
 }
-
 
 // 💬 SEND MESSAGE
 window.sendMsg = async function () {
