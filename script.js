@@ -19,18 +19,32 @@ window.register = async function () {
   const name = document.getElementById("name").value;
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
-   const msg = document.getElementById("loginMessage");
+  const msg = document.getElementById("registerMessage");
 
-  const user = await createUserWithEmailAndPassword(auth, email, password);
+  msg.innerText = "⏳ Registering...";
+  msg.style.color = "orange";
 
-  await setDoc(doc(db, "users", user.user.uid), {
-    name,
-    email,
-    uid: user.user.uid
-  });
+  try {
+    const user = await createUserWithEmailAndPassword(auth, email, password);
 
-  alert("Registered Successfully");
-  window.location.href = "index.html";
+    await setDoc(doc(db, "users", user.user.uid), {
+      name,
+      email,
+      uid: user.user.uid
+    });
+
+    msg.style.color = "green";
+    msg.innerText = "✅ Registration successful";
+
+    // redirect after 1.5 sec
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 1500);
+
+  } catch (error) {
+    msg.style.color = "red";
+    msg.innerText = "❌ " + error.message;
+  }
 };
 
 // log in function //
