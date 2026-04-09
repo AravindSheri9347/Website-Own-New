@@ -1,6 +1,7 @@
 // 🔥 GLOBAL USERS ARRAY
 let allUsers = [];
 let unsubscribeMessages = null;
+let unsubscribeUserStatus = null;
 
 import { app } from "./firebase.js";
 
@@ -54,7 +55,6 @@ window.addEventListener("beforeunload", async () => {
 });
 
 // 🔍 LOAD USERS
-
 async function loadUsers() {
   const snapshot = await getDocs(collection(db, "users"));
 
@@ -72,8 +72,7 @@ async function loadUsers() {
 
   console.log("Loaded Users:", allUsers);
 
-  // 🔥 ADD THIS LINE (IMPORTANT FIX)
-  displayUsers(allUsers);
+  displayUsers(allUsers); // ✅ show users
 }
 
 // 📋 DISPLAY USERS
@@ -102,7 +101,7 @@ window.searchUser = function () {
     .trim();
 
   if (!value) {
-    document.getElementById("userList").innerHTML = "";
+    displayUsers(allUsers); // ✅ show all again
     return;
   }
 
@@ -115,15 +114,13 @@ window.searchUser = function () {
 };
 
 // 👤 SELECT USER
-let unsubscribeUserStatus = null;
-
 function selectUser(user) {
   selectedUser = user;
 
-  // ❌ remove old listener
+  // remove old listener
   if (unsubscribeUserStatus) unsubscribeUserStatus();
 
-  // ✅ listen real-time user status
+  // real-time status
   unsubscribeUserStatus = onSnapshot(
     doc(db, "users", user.uid),
     (docSnap) => {
@@ -171,7 +168,7 @@ window.sendMsg = async function () {
     sender: currentUser.uid,
     receiver: selectedUser.uid,
     time: serverTimestamp(),
-    seen: false   // 🔥 NEW
+    seen: false
   });
 
   input.value = "";
@@ -201,7 +198,7 @@ function loadMessages() {
 
       if (isChat) {
 
-        // 🔥 STEP 2.3 (B) ADD HERE
+        // ✅ MARK AS SEEN
         if (msg.receiver === currentUser.uid && !msg.seen) {
           updateDoc(doc(db, "messages", docSnap.id), {
             seen: true
@@ -210,11 +207,8 @@ function loadMessages() {
 
         const div = document.createElement("div");
 
-        if (msg.sender === currentUser.uid) {
-          div.className = "myMsg";
-        } else {
-          div.className = "otherMsg";
-        }
+        div.className =
+          msg.sender === currentUser.uid ? "myMsg" : "otherMsg";
 
         const time = msg.time?.toDate
           ? msg.time.toDate().toLocaleTimeString([], {
@@ -223,9 +217,7 @@ function loadMessages() {
             })
           : "";
 
-        // 🔥 STEP 2.3 (C) TICK LOGIC
         let tick = "";
-
         if (msg.sender === currentUser.uid) {
           tick = msg.seen ? "✔✔" : "✔";
         }
@@ -244,6 +236,7 @@ function loadMessages() {
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
   });
 }
+
 // 🚪 LOGOUT
 window.logout = function () {
   auth.signOut();
@@ -259,36 +252,33 @@ window.addEventListener("DOMContentLoaded", () => {
     searchBox.addEventListener("input", searchUser);
   }
 
-  // ⌨️ ENTER TO SEND
-  // ⌨️ ENTER + TYPING
-const msgBox = document.getElementById("msg");
+  // ⌨️ MESSAGE BOX
+  const msgBox = document.getElementById("msg");
 
-let typingTimeout;
+  let typingTimeout;
 
-if (msgBox) {
+  if (msgBox) {
 
-  msgBox.addEventListener("input", async () => {
-    if (!selectedUser) return;
+    msgBox.addEventListener("input", async () => {
+      if (!selectedUser) return;
 
-    // ✅ set typing true
-    await updateDoc(doc(db, "users", currentUser.uid), {
-      typing: true
+      await updateDoc(doc(db, "users", currentUser.uid), {
+        typing: true
+      });
+
+      clearTimeout(typingTimeout);
+
+      typingTimeout = setTimeout(async () => {
+        await updateDoc(doc(db, "users", currentUser.uid), {
+          typing: false
+        });
+      }, 1500);
     });
 
-    // ❌ clear old timer
-    clearTimeout(typingTimeout);
+    msgBox.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendMsg();
+    });
 
-    // ✅ set typing false after user stops typing
-    typingTimeout = setTimeout(async () => {
-      await updateDoc(doc(db, "users", currentUser.uid), {
-        typing: false
-      });
-    }, 1500);
-  });
+  }
 
-  // ⌨️ ENTER TO SEND
-  msgBox.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") sendMsg();
-  });
-
-}
+});
