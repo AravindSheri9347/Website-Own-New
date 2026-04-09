@@ -54,6 +54,7 @@ window.addEventListener("beforeunload", async () => {
 });
 
 // 🔍 LOAD USERS
+
 async function loadUsers() {
   const snapshot = await getDocs(collection(db, "users"));
 
@@ -70,6 +71,9 @@ async function loadUsers() {
   });
 
   console.log("Loaded Users:", allUsers);
+
+  // 🔥 ADD THIS LINE (IMPORTANT FIX)
+  displayUsers(allUsers);
 }
 
 // 📋 DISPLAY USERS
