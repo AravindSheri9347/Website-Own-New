@@ -1,3 +1,4 @@
+let allUsers = [];
 import { app } from "./firebase.js";
 
 import { getAuth, onAuthStateChanged } 
