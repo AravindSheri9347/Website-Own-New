@@ -114,21 +114,32 @@ p {
   color: black;
 }
 
-.myMsg {
-  background: #dcf8c6;
-  padding: 8px;
-  margin: 5px;
-  border-radius: 10px;
-  max-width: 60%;
-  margin-left: auto;
-  text-align: right;
+#messages {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
 }
 
-.otherMsg {
-  background: #ffffff;
-  padding: 8px;
+/* SENT (RIGHT) */
+.myMsg {
+  align-self: flex-end;
+  background: #dcf8c6;
+  padding: 8px 12px;
   margin: 5px;
   border-radius: 10px;
   max-width: 60%;
-  text-align: left;
+  width: fit-content;
+  word-wrap: break-word;
+}
+
+/* RECEIVED (LEFT) */
+.otherMsg {
+  align-self: flex-start;
+  background: #ffffff;
+  padding: 8px 12px;
+  margin: 5px;
+  border-radius: 10px;
+  max-width: 60%;
+  width: fit-content;
+  word-wrap: break-word;
 }
