@@ -4,6 +4,8 @@ let allUsers = [];
 let unsubscribeMessages = null;
 
 import { app } from "./firebase.js";
+import { query, orderBy } 
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 import { getAuth, onAuthStateChanged } 
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -133,50 +135,46 @@ window.sendMsg = async function () {
   input.value = "";
 };
 
-
+// load messages
 function loadMessages() {
   const messagesDiv = document.getElementById("messages");
 
-  // 🔥 Remove old listener
   if (unsubscribeMessages) {
     unsubscribeMessages();
   }
 
-  unsubscribeMessages = onSnapshot(
-    collection(db, "messages"),
-    (snapshot) => {
-      messagesDiv.innerHTML = "";
+  // 🔥 ORDER BY TIME (IMPORTANT FIX)
+  const q = query(collection(db, "messages"), orderBy("time"));
 
-      snapshot.forEach(doc => {
-        const msg = doc.data();
+  unsubscribeMessages = onSnapshot(q, (snapshot) => {
+    messagesDiv.innerHTML = "";
 
-        const isChat =
-          (msg.sender === currentUser.uid &&
-            msg.receiver === selectedUser.uid) ||
-          (msg.sender === selectedUser.uid &&
-            msg.receiver === currentUser.uid);
+    snapshot.forEach(doc => {
+      const msg = doc.data();
 
-        if (isChat) {
-          const div = document.createElement("div");
+      const isChat =
+        (msg.sender === currentUser.uid &&
+          msg.receiver === selectedUser.uid) ||
+        (msg.sender === selectedUser.uid &&
+          msg.receiver === currentUser.uid);
 
-          // ✅ WhatsApp style
-          if (msg.sender === currentUser.uid) {
-            div.className = "myMsg";
-          } else {
-            div.className = "otherMsg";
-          }
+      if (isChat) {
+        const div = document.createElement("div");
 
-          div.innerText = msg.text;
-
-          // 🔥 ADD TO UI (you missed this)
-          messagesDiv.appendChild(div);
+        if (msg.sender === currentUser.uid) {
+          div.className = "myMsg";
+        } else {
+          div.className = "otherMsg";
         }
-      });
 
-      // 🔥 Auto scroll
-      messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }
-  );
+        div.innerText = msg.text;
+
+        messagesDiv.appendChild(div);
+      }
+    });
+
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  });
 }
 
 // 🚪 LOGOUT FUNCTION
