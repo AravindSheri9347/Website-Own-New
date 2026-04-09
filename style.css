@@ -64,3 +64,37 @@ p {
   font-weight: bold;
   min-height: 20px;
 }
+
+
+.chat-layout {
+  display: flex;
+  height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 30%;
+  background: #111;
+  padding: 10px;
+}
+
+#userList div {
+  padding: 10px;
+  background: #202c33;
+  margin: 5px 0;
+  cursor: pointer;
+}
+
+/* Chat area */
+.chat-area {
+  width: 70%;
+  padding: 10px;
+}
+
+#messages {
+  height: 300px;
+  overflow-y: scroll;
+  background: #0b141a;
+  margin-bottom: 10px;
+  padding: 10px;
+}
