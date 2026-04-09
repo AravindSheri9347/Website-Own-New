@@ -4,32 +4,41 @@ body {
   color: white;
 }
 
+/* Center container */
 .container {
-  width: 300px;
+  width: 320px;
   margin: 100px auto;
-  background: #202c33;
+  background: #90EE90; /* LIGHT GREEN */
   padding: 20px;
   border-radius: 10px;
+  color: black;
 }
 
+/* Inputs */
 input {
   width: 100%;
   padding: 10px;
-  margin: 5px 0;
+  margin: 8px 0;
+  border: none;
+  border-radius: 5px;
 }
 
+/* Buttons */
 button {
   width: 100%;
   padding: 10px;
-  background: #25d366;
+  margin-top: 10px;
+  background: #ff69b4; /* PINK */
   border: none;
   color: white;
   cursor: pointer;
+  border-radius: 5px;
 }
 
+/* Links */
 p {
   cursor: pointer;
-  color: #25d366;
+  color: blue;
 }
 
 /* Chat UI */
@@ -38,4 +47,6 @@ p {
   overflow-y: scroll;
   background: #111;
   padding: 10px;
+  margin-top: 10px;
+  border-radius: 5px;
 }
