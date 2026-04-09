@@ -1,31 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Reset Password</title>
   <link rel="stylesheet" href="style.css">
-
-  <style>
-    body { visibility: hidden; }
-  </style>
 </head>
-
 <body>
 
-  <div class="login-container">
-    <h1>Reset Password</h1>
+<div class="container">
+  <h2>Reset Password</h2>
 
-    <input type="email" id="fpEmail" placeholder="Enter your email">
+  <input type="email" id="resetEmail" placeholder="Enter Email">
 
-    <button id="resetBtn">Send Reset Email</button>
+  <button onclick="resetPassword()">Send Reset Link</button>
 
-    <p id="fpMessage"></p>
+  <p onclick="goLogin()">Back to Login</p>
+</div>
 
-    <a href="index.html">Back to Login</a>
-  </div>
-
-  <script type="module" src="script.js"></script>
+<script type="module" src="script.js"></script>
 
 </body>
 </html>
