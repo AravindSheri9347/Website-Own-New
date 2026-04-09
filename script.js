@@ -19,6 +19,7 @@ window.register = async function () {
   const name = document.getElementById("name").value;
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
+   const msg = document.getElementById("loginMessage");
 
   const user = await createUserWithEmailAndPassword(auth, email, password);
 
