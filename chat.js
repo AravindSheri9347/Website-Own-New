@@ -1,20 +1,16 @@
-
 // 🔥 GLOBAL USERS ARRAY
 let allUsers = [];
 let unsubscribeMessages = null;
 
-import { onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
 import { app } from "./firebase.js";
-import { query, orderBy } 
-from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 import { getAuth, onAuthStateChanged } 
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 import { 
   getFirestore, collection, getDocs, addDoc, 
-  serverTimestamp, onSnapshot, doc, getDoc 
+  serverTimestamp, onSnapshot, doc, getDoc,
+  query, orderBy, updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const auth = getAuth(app);
@@ -24,19 +20,16 @@ let currentUser = null;
 let selectedUser = null;
 
 // 🔐 AUTH STATE
-import { updateDoc, doc } 
-from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     currentUser = user;
 
-    // ✅ 🔥 ADD THIS PART (ONLINE STATUS)
+    // ✅ SET ONLINE
     await updateDoc(doc(db, "users", user.uid), {
       online: true
     });
 
-    // ✅ Get logged-in user name (existing)
+    // ✅ Get logged-in user name
     const userDoc = await getDoc(doc(db, "users", user.uid));
     if (userDoc.exists()) {
       document.getElementById("userName").innerText =
@@ -50,7 +43,7 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-// offline status
+// 🔴 OFFLINE STATUS
 window.addEventListener("beforeunload", async () => {
   if (currentUser) {
     await updateDoc(doc(db, "users", currentUser.uid), {
@@ -60,8 +53,7 @@ window.addEventListener("beforeunload", async () => {
   }
 });
 
-// 🔍 LOAD USERS (ONLY ONCE)
-// 🔍 LOAD USERS (ONLY ONCE)
+// 🔍 LOAD USERS
 async function loadUsers() {
   const snapshot = await getDocs(collection(db, "users"));
 
@@ -70,22 +62,15 @@ async function loadUsers() {
   snapshot.forEach(docSnap => {
     const data = docSnap.data();
 
-    // ✅ ignore current user
     if (data.uid !== currentUser.uid) {
-
-      // ✅ ADD THIS CHECK (IMPORTANT FIX)
       if (data.name && data.email) {
         allUsers.push(data);
       }
     }
   });
 
-  // 🔥 ADD THIS LINE (DEBUG)
   console.log("Loaded Users:", allUsers);
-
-  displayUsers(allUsers);
 }
-
 
 // 📋 DISPLAY USERS
 function displayUsers(users) {
@@ -100,49 +85,30 @@ function displayUsers(users) {
   users.forEach(user => {
     const div = document.createElement("div");
     div.innerText = `${user.name} (${user.email})`;
-
     div.onclick = () => selectUser(user);
-
     userList.appendChild(div);
   });
 }
 
-
-// 🔍 INSTANT SEARCH (WHATSAPP STYLE)
+// 🔍 SEARCH USER
 window.searchUser = function () {
   const value = document
     .getElementById("searchInput")
     .value.toLowerCase()
     .trim();
 
-  const userList = document.getElementById("userList");
-
-  userList.innerHTML = "";
-
-  if (!value) return; // ❌ don't show all users
-
-  const filtered = allUsers.filter(user => {
-    return (
-      user.name &&
-      user.email &&
-      (user.name.toLowerCase().includes(value) ||
-       user.email.toLowerCase().includes(value))
-    );
-  });
-
-  if (filtered.length === 0) {
-    userList.innerHTML = "<p style='color:red;'>No user found</p>";
+  if (!value) {
+    document.getElementById("userList").innerHTML = "";
     return;
   }
 
-  filtered.forEach(user => {
-    const div = document.createElement("div");
-    div.innerText = `${user.name} (${user.email})`;
-    div.onclick = () => selectUser(user);
-    userList.appendChild(div);
-  });
-};
+  const filtered = allUsers.filter(user =>
+    user.name.toLowerCase().includes(value) ||
+    user.email.toLowerCase().includes(value)
+  );
 
+  displayUsers(filtered);
+};
 
 // 👤 SELECT USER
 function selectUser(user) {
@@ -185,7 +151,7 @@ window.sendMsg = async function () {
   input.value = "";
 };
 
-// load messages
+// 📥 LOAD MESSAGES
 function loadMessages() {
   const messagesDiv = document.getElementById("messages");
 
@@ -193,14 +159,13 @@ function loadMessages() {
     unsubscribeMessages();
   }
 
-  // 🔥 ORDER BY TIME (IMPORTANT FIX)
   const q = query(collection(db, "messages"), orderBy("time"));
 
   unsubscribeMessages = onSnapshot(q, (snapshot) => {
     messagesDiv.innerHTML = "";
 
-    snapshot.forEach(doc => {
-      const msg = doc.data();
+    snapshot.forEach(docSnap => {
+      const msg = docSnap.data();
 
       const isChat =
         (msg.sender === currentUser.uid &&
@@ -227,33 +192,26 @@ function loadMessages() {
   });
 }
 
-// 🚪 LOGOUT FUNCTION
+// 🚪 LOGOUT
 window.logout = function () {
   auth.signOut();
   window.location.href = "index.html";
 };
 
-
-// ✅ DOM READY EVENTS (SAFE LISTENERS)
+// ✅ DOM READY EVENTS
 window.addEventListener("DOMContentLoaded", () => {
 
+  // 🔍 SEARCH
   const searchBox = document.getElementById("searchInput");
-
   if (searchBox) {
-    searchBox.addEventListener("input", () => {
-      searchUser();   // 🔥 instant search
-    });
+    searchBox.addEventListener("input", searchUser);
   }
 
-});
-
-  // ⌨️ ENTER KEY TO SEND MESSAGE
+  // ⌨️ ENTER TO SEND
   const msgBox = document.getElementById("msg");
   if (msgBox) {
     msgBox.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        sendMsg();
-      }
+      if (e.key === "Enter") sendMsg();
     });
   }
 
