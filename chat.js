@@ -39,57 +39,93 @@ async function loadUsers() {
 
   const snapshot = await getDocs(collection(db, "users"));
 
+  allUsers = []; // store users
+
   snapshot.forEach(doc => {
     const data = doc.data();
 
     if (data.uid !== currentUser.uid) {
-      const div = document.createElement("div");
-      div.innerText = data.name + " (" + data.email + ")";
-      div.onclick = () => selectUser(data);
-
-      userList.appendChild(div);
+      allUsers.push(data); // save in array
     }
   });
+
+  displayUsers(allUsers);
 }
 
-// 🔍 SEARCH USER
-window.searchUser = async function () {
-  const value = document.getElementById("searchInput").value.toLowerCase().trim();
+function displayUsers(users) {
   const userList = document.getElementById("userList");
-
   userList.innerHTML = "";
 
-  if (!value) {
-    loadUsers(); // show all if empty
+  if (users.length === 0) {
+    userList.innerHTML = "<p style='color:red;'>No user found</p>";
     return;
   }
 
-  const snapshot = await getDocs(collection(db, "users"));
+  users.forEach(user => {
+    const div = document.createElement("div");
+    div.innerText = `${user.name} (${user.email})`;
 
-  snapshot.forEach(doc => {
-    const data = doc.data();
+    div.onclick = () => selectUser(user);
 
-    // 🔥 FIX: safe check for undefined + proper matching
-    const name = (data.name || "").toLowerCase();
-    const email = (data.email || "").toLowerCase();
+    userList.appendChild(div);
+  });
+}
+// 🔍 SEARCH USER
+// window.searchUser = async function () {
+//   const value = document.getElementById("searchInput").value.toLowerCase().trim();
+//   const userList = document.getElementById("userList");
 
-    if (
-      data.uid !== currentUser.uid &&
-      (name.includes(value) || email.includes(value))
-    ) {
-      const div = document.createElement("div");
-      div.innerText = `${data.name} (${data.email})`;
+//   userList.innerHTML = "";
 
-      div.onclick = () => selectUser(data);
+//   if (!value) {
+//     loadUsers(); // show all if empty
+//     return;
+//   }
 
-      userList.appendChild(div);
-    }
+//   const snapshot = await getDocs(collection(db, "users"));
+
+//   snapshot.forEach(doc => {
+//     const data = doc.data();
+
+//     // 🔥 FIX: safe check for undefined + proper matching
+//     const name = (data.name || "").toLowerCase();
+//     const email = (data.email || "").toLowerCase();
+
+//     if (
+//       data.uid !== currentUser.uid &&
+//       (name.includes(value) || email.includes(value))
+//     ) {
+//       const div = document.createElement("div");
+//       div.innerText = `${data.name} (${data.email})`;
+
+//       div.onclick = () => selectUser(data);
+
+//       userList.appendChild(div);
+//     }
+//   });
+
+//   // If no user found
+//   if (userList.innerHTML === "") {
+//     userList.innerHTML = "<p style='color:red;'>No user found</p>";
+//   }
+// };
+
+window.searchUser = function () {
+  const value = document.getElementById("searchInput").value.toLowerCase().trim();
+
+  if (!value) {
+    displayUsers(allUsers);
+    return;
+  }
+
+  const filtered = allUsers.filter(user => {
+    const name = (user.name || "").toLowerCase();
+    const email = (user.email || "").toLowerCase();
+
+    return name.includes(value) || email.includes(value);
   });
 
-  // ❗ If no user found
-  if (userList.innerHTML === "") {
-    userList.innerHTML = "<p style='color:red;'>No user found</p>";
-  }
+  displayUsers(filtered);
 };
 
 // 👤 SELECT USER
