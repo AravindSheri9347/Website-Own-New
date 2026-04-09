@@ -108,3 +108,8 @@ p {
   color: black;
   max-width: 70%;
 }
+
+#userList div:hover {
+  background: #25d366;
+  color: black;
+}
