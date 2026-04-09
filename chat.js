@@ -111,20 +111,41 @@ window.searchUser = function () {
 };
 
 // 👤 SELECT USER
+// let unsubscribeUserStatus = null;
+
 function selectUser(user) {
   selectedUser = user;
 
-  let status = user.online
-    ? "🟢 Online"
-    : user.lastSeen
-      ? "Last seen: " + new Date(user.lastSeen).toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit"
-        })
-      : "Offline";
+  // ❌ remove old listener
+  if (unsubscribeUserStatus) unsubscribeUserStatus();
 
-  document.getElementById("chatWith").innerText =
-    user.name + " - " + status;
+  // ✅ listen real-time user status
+  unsubscribeUserStatus = onSnapshot(
+    doc(db, "users", user.uid),
+    (docSnap) => {
+      const data = docSnap.data();
+
+      let status = "";
+
+      if (data.typing) {
+        status = "✍️ Typing...";
+      } else if (data.online) {
+        status = "🟢 Online";
+      } else if (data.lastSeen) {
+        status =
+          "Last seen: " +
+          new Date(data.lastSeen).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
+          });
+      } else {
+        status = "Offline";
+      }
+
+      document.getElementById("chatWith").innerText =
+        data.name + " - " + status;
+    }
+  );
 
   loadMessages();
 }
@@ -145,7 +166,8 @@ window.sendMsg = async function () {
     text,
     sender: currentUser.uid,
     receiver: selectedUser.uid,
-    time: serverTimestamp()
+    time: serverTimestamp(),
+    seen: false   // 🔥 NEW
   });
 
   input.value = "";
@@ -174,6 +196,14 @@ function loadMessages() {
           msg.receiver === currentUser.uid);
 
       if (isChat) {
+
+        // 🔥 STEP 2.3 (B) ADD HERE
+        if (msg.receiver === currentUser.uid && !msg.seen) {
+          updateDoc(doc(db, "messages", docSnap.id), {
+            seen: true
+          });
+        }
+
         const div = document.createElement("div");
 
         if (msg.sender === currentUser.uid) {
@@ -182,7 +212,26 @@ function loadMessages() {
           div.className = "otherMsg";
         }
 
-        div.innerText = msg.text;
+        const time = msg.time?.toDate
+          ? msg.time.toDate().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit"
+            })
+          : "";
+
+        // 🔥 STEP 2.3 (C) TICK LOGIC
+        let tick = "";
+
+        if (msg.sender === currentUser.uid) {
+          tick = msg.seen ? "✔✔" : "✔";
+        }
+
+        div.innerHTML = `
+          <div>${msg.text}</div>
+          <small style="font-size:10px;color:gray;">
+            ${time} ${tick}
+          </small>
+        `;
 
         messagesDiv.appendChild(div);
       }
@@ -191,7 +240,6 @@ function loadMessages() {
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
   });
 }
-
 // 🚪 LOGOUT
 window.logout = function () {
   auth.signOut();
@@ -208,11 +256,35 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   // ⌨️ ENTER TO SEND
-  const msgBox = document.getElementById("msg");
-  if (msgBox) {
-    msgBox.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") sendMsg();
-    });
-  }
+  // ⌨️ ENTER + TYPING
+const msgBox = document.getElementById("msg");
 
-});
+let typingTimeout;
+
+if (msgBox) {
+
+  msgBox.addEventListener("input", async () => {
+    if (!selectedUser) return;
+
+    // ✅ set typing true
+    await updateDoc(doc(db, "users", currentUser.uid), {
+      typing: true
+    });
+
+    // ❌ clear old timer
+    clearTimeout(typingTimeout);
+
+    // ✅ set typing false after user stops typing
+    typingTimeout = setTimeout(async () => {
+      await updateDoc(doc(db, "users", currentUser.uid), {
+        typing: false
+      });
+    }, 1500);
+  });
+
+  // ⌨️ ENTER TO SEND
+  msgBox.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") sendMsg();
+  });
+
+}
