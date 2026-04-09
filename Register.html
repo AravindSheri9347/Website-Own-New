@@ -1,32 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register</title>
   <link rel="stylesheet" href="style.css">
-
-  <style>
-    body { visibility: hidden; }
-  </style>
 </head>
-
 <body>
 
-  <div class="login-container">
-    <h1>Register</h1>
+<div class="container">
+  <h2>Register</h2>
 
-    <input type="email" id="regEmail" placeholder="Enter Email">
-    <input type="password" id="regPass" placeholder="Enter Password">
+  <input type="text" id="name" placeholder="Name">
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
 
-    <button id="registerBtn">Register</button>
+  <button onclick="register()">Register</button>
 
-    <p id="regMessage"></p>
+  <p onclick="goLogin()">Already have account? Login</p>
+</div>
 
-    <a href="index.html">Back to Login</a>
-  </div>
-
-  <script type="module" src="script.js"></script>
+<script type="module" src="script.js"></script>
 
 </body>
 </html>
