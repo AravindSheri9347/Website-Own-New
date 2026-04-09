@@ -111,7 +111,7 @@ window.searchUser = function () {
 };
 
 // 👤 SELECT USER
-// let unsubscribeUserStatus = null;
+let unsubscribeUserStatus = null;
 
 function selectUser(user) {
   selectedUser = user;
