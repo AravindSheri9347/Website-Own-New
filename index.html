@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Chat App</title>
+  <title>Instant Chat - Login</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
-  <h2>Chat App</h2>
+  <h2>Login</h2>
 
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Password">
+  <input type="email" id="loginEmail" placeholder="Email">
+  <input type="password" id="loginPassword" placeholder="Password">
 
-  <button onclick="register()">Register</button>
   <button onclick="login()">Login</button>
+
+  <p onclick="goRegister()">New user? Register</p>
+  <p onclick="goForgot()">Forgot Password?</p>
 </div>
 
-<script type="module" src="auth.js"></script>
+<script type="module" src="script.js"></script>
 
 </body>
 </html>
