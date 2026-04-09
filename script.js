@@ -21,8 +21,8 @@ window.register = async function () {
   const password = document.getElementById("password").value;
   const msg = document.getElementById("registerMessage");
 
-  msg.innerText = "⏳ Registering...";
-  msg.style.color = "orange";
+  msg.innerText = "✅ Registration successful, Please Log in";
+  msg.style.color = "red";
 
   try {
     const user = await createUserWithEmailAndPassword(auth, email, password);
