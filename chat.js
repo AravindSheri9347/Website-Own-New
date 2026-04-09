@@ -61,18 +61,27 @@ window.addEventListener("beforeunload", async () => {
 });
 
 // 🔍 LOAD USERS (ONLY ONCE)
+// 🔍 LOAD USERS (ONLY ONCE)
 async function loadUsers() {
   const snapshot = await getDocs(collection(db, "users"));
 
   allUsers = [];
 
-  snapshot.forEach(doc => {
-    const data = doc.data();
+  snapshot.forEach(docSnap => {
+    const data = docSnap.data();
 
+    // ✅ ignore current user
     if (data.uid !== currentUser.uid) {
-      allUsers.push(data);
+
+      // ✅ ADD THIS CHECK (IMPORTANT FIX)
+      if (data.name && data.email) {
+        allUsers.push(data);
+      }
     }
   });
+
+  // 🔥 ADD THIS LINE (DEBUG)
+  console.log("Loaded Users:", allUsers);
 
   displayUsers(allUsers);
 }
@@ -106,19 +115,32 @@ window.searchUser = function () {
     .value.toLowerCase()
     .trim();
 
-  if (!value) {
-    displayUsers(allUsers);
+  const userList = document.getElementById("userList");
+
+  userList.innerHTML = "";
+
+  if (!value) return; // ❌ don't show all users
+
+  const filtered = allUsers.filter(user => {
+    return (
+      user.name &&
+      user.email &&
+      (user.name.toLowerCase().includes(value) ||
+       user.email.toLowerCase().includes(value))
+    );
+  });
+
+  if (filtered.length === 0) {
+    userList.innerHTML = "<p style='color:red;'>No user found</p>";
     return;
   }
 
-  const filtered = allUsers.filter(user => {
-    const name = (user.name || "").toLowerCase();
-    const email = (user.email || "").toLowerCase();
-
-    return name.includes(value) || email.includes(value);
+  filtered.forEach(user => {
+    const div = document.createElement("div");
+    div.innerText = `${user.name} (${user.email})`;
+    div.onclick = () => selectUser(user);
+    userList.appendChild(div);
   });
-
-  displayUsers(filtered);
 };
 
 
@@ -215,13 +237,15 @@ window.logout = function () {
 // ✅ DOM READY EVENTS (SAFE LISTENERS)
 window.addEventListener("DOMContentLoaded", () => {
 
-  // 🔍 SEARCH BAR (INSTANT SEARCH)
   const searchBox = document.getElementById("searchInput");
+
   if (searchBox) {
-    searchBox.addEventListener("keyup", () => {
-      searchUser();
+    searchBox.addEventListener("input", () => {
+      searchUser();   // 🔥 instant search
     });
   }
+
+});
 
   // ⌨️ ENTER KEY TO SEND MESSAGE
   const msgBox = document.getElementById("msg");
