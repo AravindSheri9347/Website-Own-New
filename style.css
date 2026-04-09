@@ -2,17 +2,14 @@ body {
   font-family: Arial;
   background: #0b141a;
   color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
 }
 
 .container {
+  width: 300px;
+  margin: 100px auto;
   background: #202c33;
   padding: 20px;
   border-radius: 10px;
-  width: 300px;
 }
 
 input {
@@ -24,9 +21,21 @@ input {
 button {
   width: 100%;
   padding: 10px;
-  margin-top: 10px;
   background: #25d366;
   border: none;
   color: white;
   cursor: pointer;
+}
+
+p {
+  cursor: pointer;
+  color: #25d366;
+}
+
+/* Chat UI */
+#messages {
+  height: 300px;
+  overflow-y: scroll;
+  background: #111;
+  padding: 10px;
 }
