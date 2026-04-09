@@ -6,14 +6,32 @@
 </head>
 <body>
 
-<div class="container">
-  <h2>Welcome to Insta Chat</h2>
+<div class="chat-layout">
 
-  <button onclick="openChat()">Go to Chat</button>
-  <button onclick="logout()">Logout</button>
+  <!-- LEFT SIDE -->
+  <div class="sidebar">
+    <h3 id="userName">Welcome</h3>
+
+    <input type="text" id="searchInput" placeholder="Search user..." onkeyup="searchUser()">
+
+    <div id="userList"></div>
+
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <!-- RIGHT SIDE -->
+  <div class="chat-area">
+    <h3 id="chatWith">Select user to chat</h3>
+
+    <div id="messages"></div>
+
+    <input id="msg" placeholder="Type message">
+    <button onclick="sendMsg()">Send</button>
+  </div>
+
 </div>
 
-<script type="module" src="script.js"></script>
+<script type="module" src="chat.js"></script>
 
 </body>
 </html>
