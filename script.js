@@ -49,7 +49,7 @@ window.login = async function () {
     // redirect after 1 second
     setTimeout(() => {
       window.location.href = "welcome.html";
-    }, 1000);
+    }, 1500);
 
   } catch (error) {
 
