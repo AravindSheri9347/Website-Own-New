@@ -155,10 +155,10 @@ p {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background-color: #ffc0cb;   /* pink ✅ correct property */
-  color: black;                  /* ✅ better visibility */
+  background: linear-gradient(to right, #ff7eb3, #ff758c);
+  color: white;
   padding: 15px;
- }
+}
 
 /* Logo */
 .logo {
