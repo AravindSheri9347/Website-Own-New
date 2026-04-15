@@ -150,19 +150,19 @@ p {
 }
 
 /* Header styling */
-/* .header {
+.header {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background-color: #ff69b4;  /* pink ✅ correct property */
+  background-color: #ffc0cb;   /* pink ✅ correct property */
   color: black;                  /* ✅ better visibility */
   padding: 15px;
-} */
-.header {
+/* }
+/* .header {
   background-color: #ffc0cb;  /* light pink */
   color: black;
-}
+} */ */
 
 /* Logo */
 .logo {
