@@ -153,11 +153,19 @@ p {
 .header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
+  justify-content: space-between;   /* logo left, space right */
   background: linear-gradient(to right, #ff7eb3, #ff758c);
   color: white;
-  padding: 15px;
+  padding: 15px 20px;
+  position: relative;
+}
+
+/* Center the title absolutely */
+.header h1 {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
 }
 
 /* Logo */
