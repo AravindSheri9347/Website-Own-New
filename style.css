@@ -153,19 +153,24 @@ p {
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-between;   /* logo left, space right */
-  background: linear-gradient(to right, #ff7eb3, #ff758c);
+  justify-content: flex-start;   /* ✅ keep items on left */
+  gap: 10px;
+  background-color: #ff69b4;     /* ✅ your pink color */
   color: white;
   padding: 15px 20px;
-  position: relative;
 }
 
-/* Center the title absolutely */
+/* Logo */
+.logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+
+/* Title */
 .header h1 {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   margin: 0;
+  font-size: 24px;
 }
 
 /* Logo */
