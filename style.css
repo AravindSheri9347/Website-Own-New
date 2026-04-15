@@ -150,7 +150,7 @@ p {
 }
 
 /* Header styling */
-.header {
+/* .header {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -158,6 +158,10 @@ p {
   background-color: #ff69b4;  /* pink ✅ correct property */
   color: black;                  /* ✅ better visibility */
   padding: 15px;
+} */
+.header {
+  background-color: #ffc0cb;  /* light pink */
+  color: black;
 }
 
 /* Logo */
