@@ -155,7 +155,7 @@ p {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background-color: lightgreen;  /* ✅ correct property */
+  background-color: #ff69b4;  /* pink ✅ correct property */
   color: black;                  /* ✅ better visibility */
   padding: 15px;
 }
