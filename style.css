@@ -155,15 +155,15 @@ p {
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background: #1e1e2f;
+  background: lightgreen;
   color: white;
   padding: 15px;
 }
 
 /* Logo */
 .logo {
-  width: 45px;
-  height: 45px;
+  width: 35px;
+  height: 35px;
   border-radius: 10px;
 }
 
