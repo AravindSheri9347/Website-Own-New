@@ -2,9 +2,19 @@
 <html>
 <head>
   <title>Insta Chat - Login</title>
+
+  <!-- ✅ Favicon (browser tab logo) -->
+  <link rel="icon" type="image/png" href="logochatapp.png">
+
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<!-- ✅ Header with Logo -->
+<div class="header">
+  <img src="logochatapp.png" alt="App Logo" class="logo">
+  <h1>Insta Chat</h1>
+</div>
 
 <div class="container">
   <h2>Login</h2>
@@ -14,12 +24,10 @@
 
   <button onclick="login()">Login</button>
 
- 
   <p id="loginMessage"></p>
   
-  <p onclick="goRegister()">New user? Register</p>
-  <p onclick="goForgot()">Forgot Password?</p>
-   
+  <p onclick="goRegister()" class="link">New user? Register</p>
+  <p onclick="goForgot()" class="link">Forgot Password?</p>
 </div>
 
 <script type="module" src="script.js"></script>
