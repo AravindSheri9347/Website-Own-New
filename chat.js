@@ -1,3 +1,10 @@
+import { 
+  getFirestore, collection, getDocs, addDoc, 
+  serverTimestamp, onSnapshot, doc, getDoc,
+  query, orderBy, updateDoc, deleteDoc   // ✅ ADD deleteDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+
 // 🔥 GLOBAL USERS ARRAY
 let allUsers = [];
 let unsubscribeMessages = null;
@@ -7,12 +14,6 @@ import { app } from "./firebase.js";
 
 import { getAuth, onAuthStateChanged } 
 from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-import { 
-  getFirestore, collection, getDocs, addDoc, 
-  serverTimestamp, onSnapshot, doc, getDoc,
-  query, orderBy, updateDoc
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -45,6 +46,22 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 // 🔴 OFFLINE STATUS
+// 🔴 BETTER OFFLINE STATUS
+document.addEventListener("visibilitychange", async () => {
+  if (!currentUser) return;
+
+  if (document.visibilityState === "hidden") {
+    await updateDoc(doc(db, "users", currentUser.uid), {
+      online: false,
+      lastSeen: new Date()
+    });
+  } else {
+    await updateDoc(doc(db, "users", currentUser.uid), {
+      online: true
+    });
+  }
+});
+
 window.addEventListener("beforeunload", async () => {
   if (currentUser) {
     await updateDoc(doc(db, "users", currentUser.uid), {
@@ -209,6 +226,47 @@ function loadMessages() {
 
         div.className =
           msg.sender === currentUser.uid ? "myMsg" : "otherMsg";
+        
+        // 🟡 MESSAGE OPTIONS (CLICK)
+        div.addEventListener("click", () => {
+        
+          // only allow actions for YOUR messages
+          if (msg.sender !== currentUser.uid) {
+            navigator.clipboard.writeText(msg.text);
+            alert("📋 Message copied");
+            return;
+          }
+        
+          const action = prompt(
+            "Choose option:\n1 - Edit ✏️\n2 - Delete 🗑️\n3 - Copy 📋"
+          );
+        
+          // ✏️ EDIT
+          if (action === "1") {
+            const newText = prompt("Edit message:", msg.text);
+        
+            if (newText && newText.trim() !== "") {
+              updateDoc(doc(db, "messages", docSnap.id), {
+                text: newText
+              });
+            }
+          }
+        
+          // 🗑️ DELETE
+          else if (action === "2") {
+            const confirmDelete = confirm("Delete this message?");
+            if (confirmDelete) {
+              deleteDoc(doc(db, "messages", docSnap.id));
+            }
+          }
+        
+          // 📋 COPY
+          else if (action === "3") {
+            navigator.clipboard.writeText(msg.text);
+            alert("📋 Copied");
+          }
+        
+        });
 
         const time = msg.time?.toDate
           ? msg.time.toDate().toLocaleTimeString([], {
