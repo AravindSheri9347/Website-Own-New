@@ -7,26 +7,30 @@ body {
 /* Header section for logo + text */
 .header {
   background-color: #F4C2C2; /* Baby pink */
-  display: flex;             /* Place items side by side */
-  justify-content: center;   /* Center horizontally */
-  align-items: center;       /* Align vertically */
+  display: flex;
+  flex-direction: row;       /* IMPORTANT FIX */
+  justify-content: center;
+  align-items: center;
+  gap: 10px;                 /* better spacing */
   padding: 20px;
 }
 
-/* Logo styling */
+/* Logo */
 .header .logo {
   width: 60px;
   height: 60px;
   object-fit: cover;
   border-radius: 10px;
-  margin-right: 10px; /* Space between logo and text */
+  display: block;            /* FIX alignment issue */
 }
 
-/* Title text styling */
+/* Title */
 .header .title {
   font-size: 24px;
   font-weight: bold;
   color: black;
+  margin: 0;                 /* remove default spacing */
+  white-space: nowrap;       /* prevents breaking to next line */
 }
 
 
