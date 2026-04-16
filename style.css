@@ -1,399 +1,13 @@
-/* body {
-  font-family: Arial;
-  background: lightblue;
-  color: white;
-}
 
-/* Center container */
-.container {
-  width: 320px;
-  margin: 100px auto;
-  background: #90EE90; /* LIGHT GREEN */
-  padding: 20px;
-  border-radius: 10px;
-  color: black;
-}
-
-/* Inputs */
-input {
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 5px;
-}
-
-/* Buttons */
-button {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  background: #ff69b4; /* PINK */
-  border: none;
-  color: white;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-/* Links */
-p {
-  cursor: pointer;
-  color: blue;
-}
-
-/* Chat UI */
-#messages {
-  height: 300px;
-  overflow-y: scroll;
-  background: #111;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 5px;
-}
-
-#loginMessage {
-  margin-top: 10px;
-  text-align: center;
-  font-weight: bold;
-  min-height: 20px; /* IMPORTANT: keeps space visible */
-}
-
-#registerMessage {
-  margin-top: 10px;
-  text-align: center;
-  font-weight: bold;
-  min-height: 20px;
-}
-
-
-.chat-layout {
-  display: flex;
-  height: 100vh;
-}
-
-/* Sidebar */
-.sidebar {
-  width: 30%;
-  background: #111;
-  padding: 10px;
-}
-
-#userList div {
-  padding: 10px;
-  background: #202c33;
-  margin: 5px 0;
-  cursor: pointer;
-}
-
-.chat-area {
-  width: 70%;
-  padding: 10px;
-  background: #ffc0cb; /* LIGHT PINK */
-}
-
-#messages {
-  height: 300px;
-  overflow-y: scroll;
-  background: #ffe4e1; /* soft pink inside */
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-#messages div {
-  padding: 8px;
-  margin: 5px 0;
-  border-radius: 10px;
-  background: white;
-  color: black;
-  max-width: 70%;
-}
-
-#userList div:hover {
-  background: #25d366;
-  color: black;
-}
-
-/* CHAT CONTAINER (IMPORTANT) */
-/* MAIN CONTAINER */
-.chat-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
-/* HEADER */
-.chat-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #ff69b4;
-  color: white;
-  padding: 12px;
-}
-
-/* MESSAGES AREA */
-#messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 10px;
-  background: #ece5dd;
-  display: flex;
-  flex-direction: column;
-}
-
-/* MESSAGE STYLES */
-.myMsg {
-  align-self: flex-end;
-  background: #dcf8c6;
-  padding: 8px 12px;
-  margin: 5px;
-  border-radius: 10px;
-  max-width: 65%;
-}
-
-.otherMsg {
-  align-self: flex-start;
-  background: #ffffff;
-  padding: 8px 12px;
-  margin: 5px;
-  border-radius: 10px;
-  max-width: 65%;
-}
-
-/* INPUT AREA */
-.chat-input {
-  position: relative;
-  padding: 10px;
-  background: white;
-  border-top: 1px solid #ddd;
-}
-
-/* INPUT BOX */
-#msg {
-  width: 100%;
-  padding: 12px 50px 12px 15px;
-  border-radius: 25px;
-  border: 1px solid #ccc;
-  outline: none;
-  font-size: 14px;
-}
-
-/* SEND ICON */
-.send-icon {
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 22px;
-  color: #0084ff; /* 🔵 BLUE */
-  cursor: pointer;
-}
-
-/* HOVER */
-.send-icon:hover {
-  opacity: 0.7;
-}
-
-/* INPUT FOCUS */
-#msg:focus {
-  border-color: #0084ff;
-}
-
-#chatWith {
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-/* ACTION BUTTONS UNDER MESSAGE */
-.msgActions {
-  margin-top: 5px;
-  display: flex;
-  gap: 10px;
-  font-size: 12px;
-}
-
-.msgActions span {
-  cursor: pointer;
-  color: #555;
-  padding: 2px 5px;
-  border-radius: 5px;
-}
-
-.msgActions span:hover {
-  background: #eee;
-}
-/* delete button red colour */
-.deleteBtn {
-  color: red;   /* 🔥 makes icon + text red */
-}
-/* OVERLAY */
-.deleteOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.4);
-  z-index: 9998;
-}
-
-/* DELETE BOX (CENTER FIXED) */
-.deleteBox {
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-
-  transform: translate(-50%, -50%) !important; /* 🔥 FORCE CENTER */
-
-  width: 80%;
-  max-width: 280px;
-  background: #fff;
-  border-radius: 12px;
-  padding: 12px;
-
-  z-index: 9999;
-  text-align: center;
-
-  /* 🔥 ANIMATION */
-  animation: popupFade 0.25s ease;
-}
-
-/* OPTIONS */
-.deleteBox div {
-  padding: 10px;
-  cursor: pointer;
-  font-size: 15px;
-}
-
-/* COLORS */
-.deleteBox .me {
-  color: blue;
-}
-
-.deleteBox .everyone {
-  color: red;
-}
-
-.deleteBox .cancel {
-  color: black;
-}
-
-/* HOVER */
-.deleteBox div:hover {
-  background: #f2f2f2;
-}
-
-/* 🔥 ANIMATION KEYFRAMES */
-@keyframes popupFade {
-  0% {
-    transform: translate(-50%, -60%) scale(0.9);
-    opacity: 0;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
-  }
-}
-
-/* Header styling */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: center;   /* ✅ keep items on center */
-  gap: 10px;
-  background-color: #ff69b4;     /* ✅ your pink color */
-  color: white;
-  padding: 15px 20px;
-}
-
-/* Logo */
-.logo {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-}
-
-/* Title */
-.header h1 {
-  margin: 0;
-  font-size: 24px;
-}
-
-/* Logo */
-.logo {
-  width: 45px;
-  height: 45px;
-  border-radius: 10px;
-}
-
-/* Links */
-.link {
-  color: blue;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.link:hover {
-  text-decoration: underline;
-}
-
-/* HOME HEADER */
-.home-header {
-  position: relative;
-  height: 60px;
-  background: #ff69b4;
-  color: white;
-}
-
-/* LOGO */
-.logo {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-}
-
-/* CENTER LOGO + TEXT */
-.logo-container {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* PROFILE RIGHT */
-.profile {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 20px;
-  cursor: pointer;
-}
-
-/* CHAT HEADER */
-.chat-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #ff69b4;
-  color: white;
-  padding: 12px;
-} */
-
-
-
-/*  */
+/* body */
 body {
   font-family: Arial, sans-serif;
+  margin: 0;
   background: lightblue;
   color: white;
 }
 
-/* ================= LOGIN / REGISTER CONTAINER ================= */
+/* ================= LOGIN / REGISTER ================= */
 .container {
   width: 320px;
   margin: 100px auto;
@@ -403,16 +17,15 @@ body {
   color: black;
 }
 
-/* Inputs */
 input {
   width: 100%;
   padding: 10px;
   margin: 8px 0;
   border: none;
   border-radius: 5px;
+  outline: none;
 }
 
-/* Buttons */
 button {
   width: 100%;
   padding: 10px;
@@ -425,12 +38,17 @@ button {
 }
 
 /* Links */
+.link,
 p {
   cursor: pointer;
   color: blue;
 }
 
-/* Messages for login/register */
+.link:hover {
+  text-decoration: underline;
+}
+
+/* Messages */
 #loginMessage,
 #registerMessage {
   margin-top: 10px;
@@ -439,13 +57,13 @@ p {
   min-height: 20px;
 }
 
-/* ================= CHAT LAYOUT ================= */
+/* ================= CHAT APP (MAIN SCREEN) ================= */
 .chat-layout {
   display: flex;
   height: 100vh;
 }
 
-/* Sidebar */
+/* Sidebar (user list) */
 .sidebar {
   width: 30%;
   background: #111;
@@ -457,6 +75,7 @@ p {
   background: #202c33;
   margin: 5px 0;
   cursor: pointer;
+  border-radius: 5px;
 }
 
 #userList div:hover {
@@ -467,161 +86,120 @@ p {
 /* Chat area */
 .chat-area {
   width: 70%;
-  background: #ffc0cb;
-  padding: 10px;
+  background: #e5ddd5;
+  display: flex;
+  flex-direction: column;
 }
 
-/* ================= CHAT CONTAINER ================= */
+/* ================= CHAT WINDOW ================= */
 .chat-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
 
-/* HEADER (USED FOR CHAT + HOME) */
+/* TOP BAR (NO LOGO, CLEAN) */
 .chat-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #ff69b4;
-  color: white;
-  padding: 12px;
-}
-
-/* Logo */
-.logo {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-}
-
-/* Title */
-.header h1 {
-  margin: 0;
-  font-size: 24px;
-}
-
-/* ================= HOME HEADER CENTER LOGO ================= */
-.home-header {
-  position: relative;
-  height: 60px;
-  background: #ff69b4;
+  padding: 10px 15px;
+  background: #075e54;
   color: white;
 }
 
-.logo-container {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  gap: 10px;
+#chatUser {
+  font-size: 16px;
+  font-weight: bold;
 }
 
-.profile {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 20px;
-  cursor: pointer;
+#chatStatus {
+  font-size: 12px;
+  opacity: 0.8;
 }
 
-/* ================= CHAT MESSAGES ================= */
+/* ================= MESSAGES ================= */
 #messages {
   flex: 1;
   overflow-y: auto;
   padding: 10px;
-  background: #ece5dd;
   display: flex;
   flex-direction: column;
+  background: #e5ddd5;
 }
 
-/* Message bubbles */
+/* Chat bubbles */
 .myMsg {
   align-self: flex-end;
   background: #dcf8c6;
+  color: black;
   padding: 8px 12px;
   margin: 5px;
   border-radius: 10px;
-  max-width: 65%;
-  color: black;
+  max-width: 70%;
 }
 
 .otherMsg {
   align-self: flex-start;
-  background: #ffffff;
+  background: white;
+  color: black;
   padding: 8px 12px;
   margin: 5px;
   border-radius: 10px;
-  max-width: 65%;
-  color: black;
+  max-width: 70%;
 }
 
 /* ================= INPUT AREA ================= */
 .chat-input {
-  position: relative;
+  display: flex;
+  align-items: center;
   padding: 10px;
-  background: white;
-  border-top: 1px solid #ddd;
+  background: #f0f0f0;
+  gap: 10px;
 }
 
-/* Message input */
+/* input box */
 #msg {
-  width: 100%;
-  padding: 12px 50px 12px 15px;
+  flex: 1;
+  padding: 10px 15px;
   border-radius: 25px;
-  border: 1px solid #ccc;
+  border: none;
   outline: none;
   font-size: 14px;
 }
 
-/* Send icon (BLUE) */
+/* send button */
 .send-icon {
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 22px;
-  color: #0084ff;
+  background: #25d366;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  font-size: 18px;
 }
 
 .send-icon:hover {
-  opacity: 0.7;
-}
-
-#msg:focus {
-  border-color: #0084ff;
-}
-
-/* Chat label */
-#chatWith {
-  font-weight: bold;
-  margin-bottom: 10px;
+  background: #1ebd5a;
 }
 
 /* ================= MESSAGE ACTIONS ================= */
 .msgActions {
-  margin-top: 5px;
   display: flex;
   gap: 10px;
   font-size: 12px;
+  margin-top: 5px;
 }
 
 .msgActions span {
   cursor: pointer;
   color: #555;
-  padding: 2px 5px;
-  border-radius: 5px;
 }
 
 .msgActions span:hover {
-  background: #eee;
+  text-decoration: underline;
 }
 
-/* Delete button */
 .deleteBtn {
   color: red;
 }
@@ -649,13 +227,12 @@ p {
   padding: 12px;
   z-index: 9999;
   text-align: center;
-  animation: popupFade 0.25s ease;
+  animation: popupFade 0.2s ease;
 }
 
 .deleteBox div {
   padding: 10px;
   cursor: pointer;
-  font-size: 15px;
 }
 
 .deleteBox .me {
@@ -674,7 +251,7 @@ p {
   background: #f2f2f2;
 }
 
-/* Animation */
+/* animation */
 @keyframes popupFade {
   0% {
     transform: translate(-50%, -60%) scale(0.9);
@@ -684,15 +261,4 @@ p {
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
   }
-}
-
-/* ================= LINKS ================= */
-.link {
-  color: blue;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.link:hover {
-  text-decoration: underline;
 }
