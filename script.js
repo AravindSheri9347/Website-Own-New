@@ -66,7 +66,7 @@ window.login = async function () {
 
     // redirect after 1 second
     setTimeout(() => {
-      window.location.href = "welcome.html";
+      window.location.href = "home.html";
     }, 1500);
 
   } catch (error) {
