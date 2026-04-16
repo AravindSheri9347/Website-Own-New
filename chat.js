@@ -20,31 +20,40 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 let currentUser = null;
-let selectedUser = null;
+let selectedUser = JSON.parse(localStorage.getItem("chatUser"));
 
 // 🔐 AUTH STATE
 onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    currentUser = user;
+  if (!user) {
+    window.location.href = "index.html";
+    return;
+  }
 
-    // ✅ SET ONLINE
-    await updateDoc(doc(db, "users", user.uid), {
-      online: true
-    });
+  currentUser = user;
 
-    // ✅ Get logged-in user name
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (userDoc.exists()) {
-      document.getElementById("userName").innerText =
-        "Welcome " + userDoc.data().name;
-    }
+  // ✅ set online
+  await updateDoc(doc(db, "users", user.uid), {
+    online: true
+  });
 
-    loadUsers();
+  // ✅ show selected user name (NOT welcome)
+  if (selectedUser) {
+    document.getElementById("chatWith").innerText =
+      selectedUser.name;
+  }
 
-  } else {
+  // ✅ load messages
+  loadMessages();
+});
+
+   else {
     window.location.href = "index.html";
   }
 });
+
+window.goBack = function () {
+  window.location.href = "home.html";
+};
 
 // 🔴 OFFLINE STATUS
 // 🔴 BETTER OFFLINE STATUS
@@ -54,7 +63,7 @@ document.addEventListener("visibilitychange", async () => {
   if (document.visibilityState === "hidden") {
     await updateDoc(doc(db, "users", currentUser.uid), {
       online: false,
-      lastSeen: new Date()
+      lastSeen: serverTimestamp()
     });
   } else {
     await updateDoc(doc(db, "users", currentUser.uid), {
@@ -67,7 +76,7 @@ window.addEventListener("beforeunload", async () => {
   if (currentUser) {
     await updateDoc(doc(db, "users", currentUser.uid), {
       online: false,
-      lastSeen: new Date()
+      lastSeen: serverTimestamp()
     });
   }
 });
