@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<div class="chat-layout">
+<div class="chat-container">
 
   <!-- HEADER -->
   <div class="chat-header">
@@ -17,9 +17,11 @@
   <!-- MESSAGES -->
   <div id="messages"></div>
 
-  <!-- INPUT -->
-  <input id="msg" placeholder="Type message">
-  <button onclick="sendMsg()">Send</button>
+  <!-- INPUT AREA -->
+  <div class="chat-input">
+    <input id="msg" placeholder="Type message">
+    <span class="send-icon" onclick="sendMsg()">➤</span>
+  </div>
 
 </div>
 
