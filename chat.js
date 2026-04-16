@@ -277,9 +277,18 @@ function loadMessages() {
         // 📋 COPY
         const copyBtn = document.createElement("span");
         copyBtn.innerText = "📋 Copy";
+        
         copyBtn.onclick = (e) => {
           e.stopPropagation();
+        
           navigator.clipboard.writeText(msg.text);
+        
+          // show copied text
+          copyBtn.innerText = "✅ Copied";
+        
+          setTimeout(() => {
+            copyBtn.innerText = "📋 Copy";
+          }, 1000);
         };
         actions.appendChild(copyBtn);
 
@@ -287,14 +296,14 @@ function loadMessages() {
         if (msg.sender === currentUser.uid) {
           const editBtn = document.createElement("span");
           editBtn.innerText = "✏️ Edit";
-
+          
           editBtn.onclick = (e) => {
-            e.stopPropagation();
-
+            e.stopPropagation();   // ✅ KEEP THIS
+          
             const input = document.getElementById("msg");
             input.value = msg.text;
             editMsgId = docSnap.id;
-
+          
             document.querySelector("button[onclick='sendMsg()']").innerText = "Update ✏️";
           };
 
@@ -305,9 +314,11 @@ function loadMessages() {
         if (msg.sender === currentUser.uid) {
           const deleteBtn = document.createElement("span");
           deleteBtn.innerText = "🗑️ Delete";
-
+          deleteBtn.className = "deleteBtn"; 
+          
           deleteBtn.onclick = (e) => {
-            e.stopPropagation();
+            e.stopPropagation();   // ✅ IMPORTANT
+          
             showDeleteOptions(docSnap.id);
           };
 
@@ -323,6 +334,38 @@ function loadMessages() {
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
   });
 }
+
+function showDeleteOptions(msgId) {
+
+  // remove old box
+  document.querySelectorAll(".deleteBox").forEach(e => e.remove());
+
+  const box = document.createElement("div");
+  box.className = "deleteBox";
+
+  box.innerHTML = `
+    <div onclick="deleteForMe('${msgId}')">Delete for Me</div>
+    <div onclick="deleteForEveryone('${msgId}')">Delete for Everyone</div>
+  `;
+
+  document.body.appendChild(box);
+}
+
+window.deleteForMe = async function (id) {
+  await updateDoc(doc(db, "messages", id), {
+    deletedFor: currentUser.uid
+  });
+
+  document.querySelector(".deleteBox")?.remove();
+};
+
+window.deleteForEveryone = async function (id) {
+  await updateDoc(doc(db, "messages", id), {
+    text: "🚫 Message deleted"
+  });
+
+  document.querySelector(".deleteBox")?.remove();
+};
 
 // 🚪 LOGOUT
 window.logout = function () {
