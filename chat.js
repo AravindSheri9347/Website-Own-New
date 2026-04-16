@@ -225,70 +225,99 @@ function loadMessages() {
         (msg.sender === selectedUser.uid &&
           msg.receiver === currentUser.uid);
 
-      if (isChat) {
+      if (!isChat) return;
 
-        // ✅ MARK AS SEEN
-        if (msg.receiver === currentUser.uid && !msg.seen) {
-          updateDoc(doc(db, "messages", docSnap.id), {
-            seen: true
-          });
-        }
+      // ❌ HIDE "DELETE FOR ME"
+      if (msg.deletedFor === currentUser.uid) return;
 
-        const div = document.createElement("div");
-
-        div.className =
-          msg.sender === currentUser.uid ? "myMsg" : "otherMsg";
-        
-        // 🟡 MESSAGE OPTIONS (CLICK)
-        // ✏️ CLICK → EDIT (ONLY YOUR MESSAGE)
-        div.addEventListener("click", () => {
-        
-          if (msg.sender !== currentUser.uid) {
-            navigator.clipboard.writeText(msg.text);
-            return;
-          }
-        
-          const input = document.getElementById("msg");
-        
-          input.value = msg.text;
-          editMsgId = docSnap.id;
-        
-          document.querySelector("button[onclick='sendMsg()']").innerText = "Update ✏️";
+      // ✅ MARK AS SEEN
+      if (msg.receiver === currentUser.uid && !msg.seen) {
+        updateDoc(doc(db, "messages", docSnap.id), {
+          seen: true
         });
-        
-        
-        // 🗑️ DOUBLE CLICK → DELETE
-        div.addEventListener("dblclick", async () => {
-        
-          if (msg.sender !== currentUser.uid) return;
-        
-          const confirmDelete = confirm("Delete message?");
-          if (confirmDelete) {
-            await deleteDoc(doc(db, "messages", docSnap.id));
-          }
-        });
-
-        const time = msg.time?.toDate
-          ? msg.time.toDate().toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit"
-            })
-          : "";
-
-        let tick = "";
-        if (msg.sender === currentUser.uid) {
-          tick = msg.seen ? "✔✔" : "✔";
-        }
-
-        div.innerHTML = `
-          <div class="msgText">${msg.text}</div>
-          <small style="font-size:10px;color:gray;">
-            ${time} ${tick}
-          </small>
-        `;
-
-        messagesDiv.appendChild(div);
       }
+
+      const div = document.createElement("div");
+
+      div.className =
+        msg.sender === currentUser.uid ? "myMsg" : "otherMsg";
+
+      // ⏰ TIME
+      const time = msg.time?.toDate
+        ? msg.time.toDate().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
+          })
+        : "";
+
+      // ✔✔ TICKS
+      let tick = "";
+      if (msg.sender === currentUser.uid) {
+        tick = msg.seen ? "✔✔" : "✔";
+      }
+
+      div.innerHTML = `
+        <div class="msgText">${msg.text}</div>
+        <small style="font-size:10px;color:gray;">
+          ${time} ${tick}
+        </small>
+      `;
+
+      // 🟢 CLICK → SHOW ACTIONS
+      div.addEventListener("click", (e) => {
+
+        e.stopPropagation(); // 🔥 IMPORTANT FIX
+
+        // remove old actions
+        document.querySelectorAll(".msgActions").forEach(el => el.remove());
+
+        const actions = document.createElement("div");
+        actions.className = "msgActions";
+
+        // 📋 COPY
+        const copyBtn = document.createElement("span");
+        copyBtn.innerText = "📋 Copy";
+        copyBtn.onclick = (e) => {
+          e.stopPropagation();
+          navigator.clipboard.writeText(msg.text);
+        };
+        actions.appendChild(copyBtn);
+
+        // ✏️ EDIT (ONLY YOUR MESSAGE)
+        if (msg.sender === currentUser.uid) {
+          const editBtn = document.createElement("span");
+          editBtn.innerText = "✏️ Edit";
+
+          editBtn.onclick = (e) => {
+            e.stopPropagation();
+
+            const input = document.getElementById("msg");
+            input.value = msg.text;
+            editMsgId = docSnap.id;
+
+            document.querySelector("button[onclick='sendMsg()']").innerText = "Update ✏️";
+          };
+
+          actions.appendChild(editBtn);
+        }
+
+        // 🗑️ DELETE
+        if (msg.sender === currentUser.uid) {
+          const deleteBtn = document.createElement("span");
+          deleteBtn.innerText = "🗑️ Delete";
+
+          deleteBtn.onclick = (e) => {
+            e.stopPropagation();
+            showDeleteOptions(docSnap.id);
+          };
+
+          actions.appendChild(deleteBtn);
+        }
+
+        div.appendChild(actions);
+      });
+
+      messagesDiv.appendChild(div);
     });
 
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
