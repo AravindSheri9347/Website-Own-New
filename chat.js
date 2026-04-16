@@ -9,6 +9,7 @@ import {
 let allUsers = [];
 let unsubscribeMessages = null;
 let unsubscribeUserStatus = null;
+let editMsgId = null;
 
 import { app } from "./firebase.js";
 
@@ -180,13 +181,24 @@ window.sendMsg = async function () {
 
   if (!text) return;
 
-  await addDoc(collection(db, "messages"), {
-    text,
-    sender: currentUser.uid,
-    receiver: selectedUser.uid,
-    time: serverTimestamp(),
-    seen: false
-  });
+  if (editMsgId) {
+    await updateDoc(doc(db, "messages", editMsgId), {
+      text: text
+    });
+
+    editMsgId = null;
+
+    document.querySelector("button[onclick='sendMsg()']").innerText = "Send";
+
+  } else {
+    await addDoc(collection(db, "messages"), {
+      text,
+      sender: currentUser.uid,
+      receiver: selectedUser.uid,
+      time: serverTimestamp(),
+      seen: false
+    });
+  }
 
   input.value = "";
 };
@@ -228,44 +240,32 @@ function loadMessages() {
           msg.sender === currentUser.uid ? "myMsg" : "otherMsg";
         
         // 🟡 MESSAGE OPTIONS (CLICK)
+        // ✏️ CLICK → EDIT (ONLY YOUR MESSAGE)
         div.addEventListener("click", () => {
         
-          // only allow actions for YOUR messages
           if (msg.sender !== currentUser.uid) {
             navigator.clipboard.writeText(msg.text);
-            alert("📋 Message copied");
             return;
           }
         
-          const action = prompt(
-            "Choose option:\n1 - Edit ✏️\n2 - Delete 🗑️\n3 - Copy 📋"
-          );
+          const input = document.getElementById("msg");
         
-          // ✏️ EDIT
-          if (action === "1") {
-            const newText = prompt("Edit message:", msg.text);
+          input.value = msg.text;
+          editMsgId = docSnap.id;
         
-            if (newText && newText.trim() !== "") {
-              updateDoc(doc(db, "messages", docSnap.id), {
-                text: newText
-              });
-            }
+          document.querySelector("button[onclick='sendMsg()']").innerText = "Update ✏️";
+        });
+        
+        
+        // 🗑️ DOUBLE CLICK → DELETE
+        div.addEventListener("dblclick", async () => {
+        
+          if (msg.sender !== currentUser.uid) return;
+        
+          const confirmDelete = confirm("Delete message?");
+          if (confirmDelete) {
+            await deleteDoc(doc(db, "messages", docSnap.id));
           }
-        
-          // 🗑️ DELETE
-          else if (action === "2") {
-            const confirmDelete = confirm("Delete this message?");
-            if (confirmDelete) {
-              deleteDoc(doc(db, "messages", docSnap.id));
-            }
-          }
-        
-          // 📋 COPY
-          else if (action === "3") {
-            navigator.clipboard.writeText(msg.text);
-            alert("📋 Copied");
-          }
-        
         });
 
         const time = msg.time?.toDate
