@@ -337,36 +337,70 @@ function loadMessages() {
 
 function showDeleteOptions(msgId) {
 
-  // remove old box
-  document.querySelectorAll(".deleteBox").forEach(e => e.remove());
+  // remove old elements
+  document.querySelectorAll(".deleteBox, .deleteOverlay").forEach(e => e.remove());
 
+  // overlay
+  const overlay = document.createElement("div");
+  overlay.className = "deleteOverlay";
+
+  overlay.onclick = () => {
+    overlay.remove();
+    box.remove();
+  };
+
+  // box
   const box = document.createElement("div");
   box.className = "deleteBox";
 
-  box.innerHTML = `
-    <div onclick="deleteForMe('${msgId}')">Delete for Me</div>
-    <div onclick="deleteForEveryone('${msgId}')">Delete for Everyone</div>
-  `;
+  // delete for me
+  const delMe = document.createElement("div");
+  delMe.innerText = "Delete for Me";
+  delMe.className = "me";
+  delMe.onclick = () => deleteForMe(msgId);
 
+  // delete for everyone
+  const delEveryone = document.createElement("div");
+  delEveryone.innerText = "Delete for Everyone";
+  delEveryone.className = "everyone";
+  delEveryone.onclick = () => deleteForEveryone(msgId);
+
+  // cancel
+  const cancel = document.createElement("div");
+  cancel.innerText = "Cancel";
+  cancel.className = "cancel";
+  cancel.onclick = () => {
+    overlay.remove();
+    box.remove();
+  };
+
+  box.appendChild(delMe);
+  box.appendChild(delEveryone);
+  box.appendChild(cancel);
+
+  document.body.appendChild(overlay);
   document.body.appendChild(box);
 }
 
+
+// ✅ DELETE FOR ME (HIDE MESSAGE)
 window.deleteForMe = async function (id) {
   await updateDoc(doc(db, "messages", id), {
     deletedFor: currentUser.uid
   });
 
-  document.querySelector(".deleteBox")?.remove();
+  document.querySelectorAll(".deleteBox, .deleteOverlay").forEach(e => e.remove());
 };
 
+
+// ✅ DELETE FOR EVERYONE
 window.deleteForEveryone = async function (id) {
   await updateDoc(doc(db, "messages", id), {
     text: "🚫 Message deleted"
   });
 
-  document.querySelector(".deleteBox")?.remove();
+  document.querySelectorAll(".deleteBox, .deleteOverlay").forEach(e => e.remove());
 };
-
 // 🚪 LOGOUT
 window.logout = function () {
   auth.signOut();
