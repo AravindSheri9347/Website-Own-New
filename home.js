@@ -20,7 +20,7 @@ onAuthStateChanged(auth, async (user) => {
     window.location.href = "index.html";
     return;
   }
-
+  loadRecentChats();
   currentUser = user;
   loadUsers();
 });
@@ -38,6 +38,11 @@ async function loadUsers() {
     }
   });
 }
+import {
+  onSnapshot,
+  query,
+  orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // 🔍 SEARCH USERS
 document.getElementById("searchInput").addEventListener("input", () => {
@@ -74,3 +79,60 @@ window.logout = function () {
   signOut(auth);
   window.location.href = "index.html";
 };
+
+function loadRecentChats() {
+  const chatList = document.getElementById("chatList");
+
+  const q = query(collection(db, "messages"), orderBy("time", "desc"));
+
+  onSnapshot(q, (snapshot) => {
+    chatList.innerHTML = "";
+
+    const usersMap = new Map();
+
+    snapshot.forEach(doc => {
+      const msg = doc.data();
+
+      // only my chats
+      if (
+        msg.sender === currentUser.uid ||
+        msg.receiver === currentUser.uid
+      ) {
+        const otherUserId =
+          msg.sender === currentUser.uid
+            ? msg.receiver
+            : msg.sender;
+
+        // store latest message only
+        if (!usersMap.has(otherUserId)) {
+          usersMap.set(otherUserId, msg);
+        }
+      }
+    });
+
+    // display
+    usersMap.forEach((msg, userId) => {
+      const user = allUsers.find(u => u.uid === userId);
+      if (!user) return;
+
+      const div = document.createElement("div");
+
+      const time = msg.time?.toDate
+        ? msg.time.toDate().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
+          })
+        : "";
+
+      div.innerHTML = `
+        <b>${user.name}</b><br>
+        <small>${msg.text}</small>
+        <span style="float:right;font-size:10px;">${time}</span>
+      `;
+
+      div.onclick = () => openChat(user);
+
+      chatList.appendChild(div);
+    });
+  });
+}
