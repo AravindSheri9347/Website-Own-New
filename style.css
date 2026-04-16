@@ -79,24 +79,73 @@ button {
 }
 
 /* ================= HOME PAGE ================= */
+/* ================= HOME PAGE ================= */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Layout split: sidebar + chat area */
 .chat-layout {
   display: flex;
   height: 100vh;
 }
 
-/* sidebar user list */
+/* Sidebar (user list + header + search) */
 .sidebar {
   width: 30%;
   background: #111;
   padding: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
-/* SEARCH RESULT LIST (FIX: BLACK TEXT) */
+/* Header with logo + name */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #F4C2C2; /* Baby pink */
+  padding: 8px;
+}
+
+.sidebar-header .logo {
+  width: 50px;   /* Increased size */
+  height: 50px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 10px;
+}
+
+.sidebar-header .title {
+  font-size: 22px; /* Larger text */
+  font-weight: bold;
+  color: black;
+}
+
+/* Search bar full width */
+.search-bar {
+  width: 100%;
+  margin: 10px 0;
+}
+
+.search-bar input {
+  width: 100%;              /* Stretch left to right */
+  padding: 8px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+/* User list items */
 #userList div {
+  display: flex;              /* Side by side layout */
+  align-items: center;        /* Vertical alignment */
+  justify-content: space-between; /* Name left, profile right */
   padding: 10px;
   margin: 5px 0;
   background: #eee;
-  color: black;           /* IMPORTANT FIX */
+  color: black;               /* IMPORTANT FIX */
   cursor: pointer;
   border-radius: 5px;
 }
@@ -105,12 +154,13 @@ button {
   background: #ddd;
 }
 
-/* chat area right side */
-.chat-area {
-  width: 70%;
-  background: #e5ddd5;
+/* Username styling */
+#userList .username {
+  font-size: 16px;
+  font-weight: 500;
 }
 
+/* Profile
 /* ================= CHAT PAGE (WHATSAPP STYLE) ================= */
 .chat-container {
   display: flex;
