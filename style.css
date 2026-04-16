@@ -285,3 +285,43 @@ p {
 .link:hover {
   text-decoration: underline;
 }
+
+/* HOME HEADER */
+.home-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ff69b4;
+  color: white;
+  padding: 12px 15px;
+}
+
+/* LOGO */
+.logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+}
+
+/* LOGO + TEXT */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* PROFILE ICON */
+.profile {
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* CHAT HEADER */
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ff69b4;
+  color: white;
+  padding: 12px;
+}
