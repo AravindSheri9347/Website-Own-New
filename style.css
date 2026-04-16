@@ -171,7 +171,10 @@ p {
 .msgActions span:hover {
   background: #eee;
 }
-
+/* delete button red colour */
+.deleteBtn {
+  color: red;   /* 🔥 makes icon + text red */
+}
 /* OVERLAY */
 .deleteOverlay {
   position: fixed;
