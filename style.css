@@ -173,18 +173,33 @@ p {
 }
 
 /* DELETE OPTIONS BOX (CENTER LIKE WHATSAPP) */
-.deleteBox {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
+.deleteBox div {
   padding: 12px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  z-index: 9999;
+  text-align: center;
+  font-size: 15px;
+  cursor: pointer;
+  background: none;   /* ❌ remove box look */
 }
 
+/* BLUE TEXT */
+.deleteBox .me {
+  color: #007bff;
+}
+
+/* RED TEXT */
+.deleteBox .everyone {
+  color: #e53935;
+}
+
+/* CANCEL TEXT */
+.deleteBox .cancel {
+  color: #333;
+}
+
+/* LIGHT HOVER ONLY */
+.deleteBox div:hover {
+  background: #f5f5f5;
+}
 .deleteBox div {
   padding: 8px;
   cursor: pointer;
