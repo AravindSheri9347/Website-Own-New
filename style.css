@@ -7,16 +7,28 @@ body {
 /* Header section for logo + text */
 .header {
   background-color: #F4C2C2; /* Baby pink */
-  text-align: center;        /* Center logo + text */
-  padding: 20px;             /* Space around content */
+  display: flex;             /* Place items side by side */
+  justify-content: center;   /* Center horizontally */
+  align-items: center;       /* Align vertically */
+  padding: 20px;
+}
+
+/* Logo styling */
+.header .logo {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-right: 10px; /* Space between logo and text */
 }
 
 /* Title text styling */
 .header .title {
   font-size: 24px;
   font-weight: bold;
-  margin-top: 10px;
+  color: black;
 }
+
 
 
 /* ================= LOGIN / REGISTER ================= */
