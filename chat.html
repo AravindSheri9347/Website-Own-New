@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="chat-layout">
+
+  <!-- HEADER -->
+  <div class="chat-header">
+    <button onclick="goBack()">⬅</button>
+    <span id="chatWith">Chat</span>
+  </div>
+
+  <!-- MESSAGES -->
+  <div id="messages"></div>
+
+  <!-- INPUT -->
+  <input id="msg" placeholder="Type message">
+  <button onclick="sendMsg()">Send</button>
+
+</div>
+
+<script type="module" src="chat.js"></script>
+
+</body>
+</html>
