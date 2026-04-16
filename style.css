@@ -114,16 +114,20 @@ p {
   color: black;
 }
 
+/* CHAT CONTAINER (IMPORTANT) */
 #messages {
   display: flex;
   flex-direction: column;
   padding: 10px;
+  overflow-y: auto;
+  height: 400px;
 }
 
 /* SENT (RIGHT) */
 .myMsg {
   align-self: flex-end;
-  background: #dcf8c6;
+  background: #ff69b4; /* pink */
+  color: white;
   padding: 8px 12px;
   margin: 5px;
   border-radius: 10px;
