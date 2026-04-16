@@ -6,25 +6,24 @@
 </head>
 <body>
 
-<div class="chat-container">
+<div class="chat-box">
 
-  <!-- HEADER -->
-  <div class="chat-header">
-    <button onclick="goBack()">⬅</button>
-    <span id="chatWith">Chat</span>
+  <!-- TOP BAR -->
+  <div class="chat-top">
+    <div class="chat-user" id="chatUser">User Name</div>
+    <div class="chat-status" id="chatStatus">online</div>
   </div>
 
   <!-- MESSAGES -->
   <div id="messages"></div>
 
-  <!-- INPUT AREA -->
+  <!-- INPUT -->
   <div class="chat-input">
-    <input id="msg" placeholder="Type message">
-    <span class="send-icon" onclick="sendMsg()">➤</span>
+    <input type="text" id="msg" placeholder="Type a message..." />
+    <div class="send-icon" onclick="sendMessage()">➤</div>
   </div>
 
 </div>
-
 <script type="module" src="chat.js"></script>
 
 </body>
