@@ -281,7 +281,7 @@ function loadMessages() {
         }
 
         div.innerHTML = `
-          <div>${msg.text}</div>
+          <div class="msgText">${msg.text}</div>
           <small style="font-size:10px;color:gray;">
             ${time} ${tick}
           </small>
