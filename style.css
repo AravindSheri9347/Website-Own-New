@@ -288,12 +288,10 @@ p {
 
 /* HOME HEADER */
 .home-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  position: relative;
+  height: 60px;
   background: #ff69b4;
   color: white;
-  padding: 12px 15px;
 }
 
 /* LOGO */
@@ -303,15 +301,23 @@ p {
   border-radius: 10px;
 }
 
-/* LOGO + TEXT */
+/* CENTER LOGO + TEXT */
 .logo-container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-/* PROFILE ICON */
+/* PROFILE RIGHT */
 .profile {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
   font-size: 20px;
   cursor: pointer;
 }
