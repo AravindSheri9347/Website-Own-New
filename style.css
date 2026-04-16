@@ -173,12 +173,20 @@ p {
 }
 
 /* DELETE OPTIONS BOX (CENTER LIKE WHATSAPP) */
-.deleteBox div {
-  padding: 12px;
+.deleteBox {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);  /* 🔥 CENTER */
+
+  width: 80%;
+  max-width: 280px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px;
+
+  z-index: 9999;
   text-align: center;
-  font-size: 15px;
-  cursor: pointer;
-  background: none;   /* ❌ remove box look */
 }
 
 /* BLUE TEXT */
