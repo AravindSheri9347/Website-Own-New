@@ -228,7 +228,9 @@ function loadMessages() {
       if (!isChat) return;
 
       // ❌ HIDE "DELETE FOR ME"
-      if (msg.deletedFor === currentUser.uid) return;
+      if (msg.deletedFor === currentUser.uid) {
+        return;
+      }
 
       // ✅ MARK AS SEEN
       if (msg.receiver === currentUser.uid && !msg.seen) {
