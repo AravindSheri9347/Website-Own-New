@@ -179,38 +179,35 @@ function selectUser(user) {
 }
 
 // 💬 SEND MESSAGE
-window.sendMsg = async function () {
+function sendMessage() {
   const input = document.getElementById("msg");
-  const text = input.value.trim();
+  const message = input.value.trim();
 
-  if (!selectedUser) {
-    alert("Select user first");
-    return;
-  }
+  if (message === "") return;
 
-  if (!text) return;
+  const msgBox = document.createElement("div");
+  msgBox.className = "myMsg";
+  msgBox.innerText = message;
 
-  if (editMsgId) {
-    await updateDoc(doc(db, "messages", editMsgId), {
-      text: text
-    });
-
-    editMsgId = null;
-
-    document.querySelector("button[onclick='sendMsg()']").innerText = "Send";
-
-  } else {
-    await addDoc(collection(db, "messages"), {
-      text,
-      sender: currentUser.uid,
-      receiver: selectedUser.uid,
-      time: serverTimestamp(),
-      seen: false
-    });
-  }
+  document.getElementById("messages").appendChild(msgBox);
 
   input.value = "";
-};
+
+  document.getElementById("messages").scrollTop =
+    document.getElementById("messages").scrollHeight;
+}
+
+/* ENTER KEY SUPPORT */
+document.addEventListener("DOMContentLoaded", function () {
+  const input = document.getElementById("msg");
+
+  input.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      sendMessage();
+    }
+  });
+});
 
 // 📥 LOAD MESSAGES
 function loadMessages() {
