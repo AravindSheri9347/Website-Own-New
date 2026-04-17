@@ -6,24 +6,47 @@
 </head>
 <body>
 
-<div class="chat-box">
+<div class="chat-layout">
 
-  <!-- TOP BAR -->
-  <div class="chat-top">
-    <div class="chat-user" id="chatUser">User Name</div>
-    <div class="chat-status" id="chatStatus">online</div>
+  <!-- LEFT SIDE (USERS) -->
+  <div class="sidebar">
+
+    <div class="sidebar-header">
+      <img src="logo.png" class="logo">
+      <div class="title">Instant Chat</div>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" placeholder="Search user">
+    </div>
+
+    <div id="userList"></div>
+
   </div>
 
-  <!-- MESSAGES -->
-  <div id="messages"></div>
+  <!-- RIGHT SIDE (CHAT CONTAINER - THIS WAS MISSING FOR YOU) -->
+  <div class="chat-area">
 
-  <!-- INPUT -->
-  <div class="chat-input">
-    <input type="text" id="msg" placeholder="Type a message..." />
-    <div class="send-icon" onclick="sendMessage()">➤</div>
+    <!-- CHAT HEADER -->
+    <div class="chat-header">
+      <div class="user-info">
+        <span id="chatUser">Select User</span>
+        <span class="status" id="chatStatus">offline</span>
+      </div>
+    </div>
+
+    <!-- MESSAGES AREA (MAIN CHAT CONTAINER) -->
+    <div id="messages"></div>
+
+    <!-- INPUT AREA -->
+    <div class="chat-input">
+      <input type="text" id="msg" placeholder="Type message...">
+      <div class="send-icon" onclick="sendMessage()">➤</div>
+    </div>
+
   </div>
-
 </div>
+  
 <script type="module" src="chat.js"></script>
 
 </body>
