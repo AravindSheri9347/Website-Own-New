@@ -313,3 +313,21 @@ body {
   width: 250px;
   text-align: center;
 }
+
+@media (max-width: 768px) {
+
+  /* Hide LEFT SIDEBAR on mobile */
+  .sidebar {
+    display: none;
+  }
+
+  /* Make chat take full width */
+  .chat-area {
+    width: 100%;
+  }
+
+  /* Ensure layout stays clean */
+  .chat-layout {
+    flex-direction: column;
+  }
+}
