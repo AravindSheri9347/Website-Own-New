@@ -35,6 +35,7 @@ async function loadUsers() {
     const data = doc.data();
     if (data.uid !== currentUser.uid) {
       allUsers.push(data);
+      console.log(allUsers);
     }
   });
 }
