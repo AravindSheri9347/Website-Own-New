@@ -447,24 +447,28 @@ window.logout = function () {
 };
 
 // ✅ DOM READY EVENTS
-window.addEventListener("DOMContentLoaded",()=>{
+window.addEventListener("DOMContentLoaded", () => {
 
+  // SEND BUTTON
   const sendBtn = document.getElementById("sendBtn");
 
-  if(sendBtn){
+  if (sendBtn) {
 
-    sendBtn.addEventListener("click",sendMsg);
+    sendBtn.addEventListener("click", () => {
+      sendMsg();
+    });
 
   }
 
 
+  // ENTER KEY SEND
   const input = document.getElementById("msg");
 
-  if(input){
+  if (input) {
 
-    input.addEventListener("keydown",(e)=>{
+    input.addEventListener("keydown", (e) => {
 
-      if(e.key==="Enter"){
+      if (e.key === "Enter") {
 
         e.preventDefault();
 
@@ -474,31 +478,32 @@ window.addEventListener("DOMContentLoaded",()=>{
 
     });
 
-  }
 
-});
+    // TYPING STATUS
+    let typingTimeout;
 
-  // ⌨️ MESSAGE BOX
-  const msgBox = document.getElementById("msg");
+    input.addEventListener("input", async () => {
 
-  let typingTimeout;
+      if (!selectedUser || !currentUser) return;
 
-  if (msgBox) {
-
-    msgBox.addEventListener("input", async () => {
-      if (!selectedUser) return;
 
       await updateDoc(doc(db, "users", currentUser.uid), {
         typing: true
       });
 
+
       clearTimeout(typingTimeout);
 
+
       typingTimeout = setTimeout(async () => {
+
         await updateDoc(doc(db, "users", currentUser.uid), {
           typing: false
         });
+
       }, 1500);
+
+
     });
 
   }
