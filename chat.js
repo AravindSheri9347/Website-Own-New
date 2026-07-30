@@ -453,7 +453,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const sendBtn=document.getElementById("sendBtn");
 
   sendBtn.addEventListener("click",sendMsg);
-};
+}
 
 
   // ENTER KEY SEND
