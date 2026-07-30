@@ -38,9 +38,14 @@ onAuthStateChanged(auth, async (user) => {
 
   // ✅ show selected user name (NOT welcome)
   if (selectedUser) {
-    document.getElementById("chatWith").innerText =
-      selectedUser.name;
-  }
+
+  document.getElementById("chatWith").innerText =
+    selectedUser.name;
+
+  document.getElementById("chatStatus").innerText =
+    "offline";
+
+}
 
   // ✅ load messages
   loadMessages();
@@ -167,7 +172,11 @@ function selectUser(user) {
       }
 
       document.getElementById("chatWith").innerText =
-        data.name + " - " + status;
+        data.name;
+
+
+      document.getElementById("chatStatus").innerText =
+        status;
     }
   );
 
@@ -178,17 +187,20 @@ function selectUser(user) {
 async function sendMsg() {
 
   const input = document.getElementById("msg");
+
   const message = input.value.trim();
+
 
   if (!message) return;
 
+
   if (!selectedUser) {
-    alert("Select user first");
+    alert("Select a user first");
     return;
   }
 
 
-  await addDoc(collection(db, "messages"), {
+  await addDoc(collection(db,"messages"),{
 
     sender: currentUser.uid,
 
@@ -198,7 +210,7 @@ async function sendMsg() {
 
     time: serverTimestamp(),
 
-    seen: false
+    seen:false
 
   });
 
@@ -207,21 +219,23 @@ async function sendMsg() {
 
 }
 
+
 window.sendMsg = sendMsg;
 
 /* ENTER KEY SUPPORT */
 document.addEventListener("DOMContentLoaded", function () {
   const input = document.getElementById("msg");
 
-  input.addEventListener("keydown", function(event){
+  input.addEventListener("keydown",(e)=>{
 
-    if(event.key === "Enter"){
+  if(e.key==="Enter"){
 
-        event.preventDefault();
+    e.preventDefault();
 
-        sendMsg();
+    sendMsg();
 
-    }
+  }
+
 });
 });
 
