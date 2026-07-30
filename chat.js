@@ -265,201 +265,96 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // 📥 LOAD MESSAGES
+// 📥 LOAD MESSAGES
 function loadMessages() {
 
   const messagesDiv = document.getElementById("messages");
 
-
-  if (!messagesDiv) {
-    console.log("Messages div not found");
+  if (!messagesDiv || !currentUser || !selectedUser) {
     return;
   }
 
-
-  if (!currentUser || !selectedUser) {
-    console.log("User not selected");
-    return;
-  }
-
-
+  // Remove previous listener
   if (unsubscribeMessages) {
     unsubscribeMessages();
   }
-
 
   const q = query(
     collection(db, "messages"),
     orderBy("time", "asc")
   );
 
-
   unsubscribeMessages = onSnapshot(q, (snapshot) => {
-
 
     messagesDiv.innerHTML = "";
 
-
     snapshot.forEach((docSnap) => {
-
 
       const msg = docSnap.data();
 
-
-
+      // Show only messages between current user and selected user
       const isChat =
-
         (msg.sender === currentUser.uid &&
-         msg.receiver === selectedUser.uid)
-
-        ||
-
+          msg.receiver === selectedUser.uid) ||
         (msg.sender === selectedUser.uid &&
-         msg.receiver === currentUser.uid);
+          msg.receiver === currentUser.uid);
 
+      if (!isChat) return;
 
-
-      if (!isChat) {
-        return;
-      }
-
-
-
+      // Create message div
       const div = document.createElement("div");
 
+      div.className =
+        msg.sender === currentUser.uid ? "myMsg" : "otherMsg";
 
-
-      if (msg.sender === currentUser.uid) {
-
-        div.className = "myMsg";
-
-      } else {
-
-        div.className = "otherMsg";
-
-      }
-
-
-
+      // Time
       const time = msg.time?.toDate
-
         ? msg.time.toDate().toLocaleTimeString([], {
-
             hour: "2-digit",
-
             minute: "2-digit"
-
           })
-
         : "";
 
+      // Tick
+      let tick = "";
 
+      if (msg.sender === currentUser.uid) {
+        tick = msg.seen ? "✔✔" : "✔";
+      }
 
+      // Message HTML
       div.innerHTML = `
-
-        <div class="msgText">
-
-          ${msg.text}
-
-        </div>
-
-        <small>
-
-          ${time}
-
-        </small>
-
+        <div class="msgText">${msg.text}</div>
+        <small>${time} ${tick}</small>
       `;
 
-
-
-      messagesDiv.appendChild(div);
-
-
-    });
-
-
-
-    // auto scroll bottom
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
-
-
-  });
-
-}
-
-      // 🟢 CLICK → SHOW ACTIONS
+      // ==========================
+      // CLICK EVENT (ADD HERE)
+      // ==========================
       div.addEventListener("click", (e) => {
 
-        e.stopPropagation(); // 🔥 IMPORTANT FIX
+        e.stopPropagation();
 
-        // remove old actions
-        document.querySelectorAll(".msgActions").forEach(el => el.remove());
+        alert(msg.text);
 
-        const actions = document.createElement("div");
-        actions.className = "msgActions";
+        // Later you can replace alert()
+        // with Copy / Edit / Delete menu.
 
-        // 📋 COPY
-        const copyBtn = document.createElement("span");
-        copyBtn.innerText = "📋 Copy";
-        
-        copyBtn.onclick = (e) => {
-          e.stopPropagation();
-        
-          navigator.clipboard.writeText(msg.text);
-        
-          // show copied text
-          copyBtn.innerText = "✅ Copied";
-        
-          setTimeout(() => {
-            copyBtn.innerText = "📋 Copy";
-          }, 1000);
-        };
-        actions.appendChild(copyBtn);
-
-        // ✏️ EDIT (ONLY YOUR MESSAGE)
-        if (msg.sender === currentUser.uid) {
-          const editBtn = document.createElement("span");
-          editBtn.innerText = "✏️ Edit";
-          
-          editBtn.onclick = (e) => {
-            e.stopPropagation();   // ✅ KEEP THIS
-          
-            const input = document.getElementById("msg");
-            input.value = msg.text;
-            editMsgId = docSnap.id;
-          
-            document.querySelector("button[onclick='sendMsg()']").innerText = "Update ✏️";
-          };
-
-          actions.appendChild(editBtn);
-        }
-
-        // 🗑️ DELETE
-        if (msg.sender === currentUser.uid) {
-          const deleteBtn = document.createElement("span");
-          deleteBtn.innerText = "🗑️ Delete";
-          deleteBtn.className = "deleteBtn"; 
-          
-          deleteBtn.onclick = (e) => {
-            e.stopPropagation();   // ✅ IMPORTANT
-          
-            showDeleteOptions(docSnap.id);
-          };
-
-          actions.appendChild(deleteBtn);
-        }
-
-        div.appendChild(actions);
       });
 
+      // ==========================
+      // APPEND MESSAGE
+      // ==========================
       messagesDiv.appendChild(div);
+
     });
 
+    // Auto scroll
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
-  });
-}
 
+  });
+
+}
 function showDeleteOptions(msgId) {
 
   // remove old elements
