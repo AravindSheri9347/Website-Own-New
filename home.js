@@ -20,9 +20,12 @@ onAuthStateChanged(auth, async (user) => {
     window.location.href = "index.html";
     return;
   }
-  loadRecentChats();
+
   currentUser = user;
-  loadUsers();
+
+  await loadUsers();
+
+  loadRecentChats();
 });
 
 // 🔍 LOAD USERS
@@ -33,11 +36,13 @@ async function loadUsers() {
 
   snapshot.forEach(doc => {
     const data = doc.data();
+
     if (data.uid !== currentUser.uid) {
       allUsers.push(data);
-      console.log(allUsers);
     }
   });
+
+  console.log("Loaded users:", allUsers);
 }
 import {
   onSnapshot,
@@ -55,9 +60,9 @@ document.getElementById("searchInput").addEventListener("input", () => {
   if (!value) return;
 
   const filtered = allUsers.filter(u =>
-    u.name.toLowerCase().includes(value) ||
-    u.email.toLowerCase().includes(value)
-  );
+  (u.name || "").toLowerCase().includes(value) ||
+  (u.email || "").toLowerCase().includes(value)
+);
 
   filtered.forEach(user => {
     const div = document.createElement("div");
