@@ -189,10 +189,24 @@ async function sendMsg() {
 
   const input = document.getElementById("msg");
 
-  const message = input.value.trim();
+  if (!input) {
+    console.log("Message input not found");
+    return;
+  }
 
 
-  if (!message) return;
+  const text = input.value.trim();
+
+
+  if (text === "") {
+    return;
+  }
+
+
+  if (!currentUser) {
+    console.log("Current user not loaded");
+    return;
+  }
 
 
   if (!selectedUser) {
@@ -201,28 +215,38 @@ async function sendMsg() {
   }
 
 
-  await addDoc(collection(db,"messages"),{
+  try {
 
-    sender: currentUser.uid,
+    await addDoc(collection(db, "messages"), {
 
-    receiver: selectedUser.uid,
+      sender: currentUser.uid,
 
-    text: message,
+      receiver: selectedUser.uid,
 
-    time: serverTimestamp(),
+      text: text,
 
-    seen:false
+      time: serverTimestamp(),
 
-  });
+      seen: false
+
+    });
 
 
-  input.value = "";
+    // clear input after sending
+    input.value = "";
+
+
+  } catch (error) {
+
+    console.error("Send message error:", error);
+
+  }
 
 }
 
 
+// make it available for button click
 window.sendMsg = sendMsg;
-
 /* ENTER KEY SUPPORT */
 document.addEventListener("DOMContentLoaded", function () {
   const input = document.getElementById("msg");
@@ -242,65 +266,127 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // 📥 LOAD MESSAGES
 function loadMessages() {
+
   const messagesDiv = document.getElementById("messages");
+
+
+  if (!messagesDiv) {
+    console.log("Messages div not found");
+    return;
+  }
+
+
+  if (!currentUser || !selectedUser) {
+    console.log("User not selected");
+    return;
+  }
+
 
   if (unsubscribeMessages) {
     unsubscribeMessages();
   }
 
-  const q = query(collection(db, "messages"), orderBy("time"));
+
+  const q = query(
+    collection(db, "messages"),
+    orderBy("time", "asc")
+  );
+
 
   unsubscribeMessages = onSnapshot(q, (snapshot) => {
+
+
     messagesDiv.innerHTML = "";
 
-    snapshot.forEach(docSnap => {
+
+    snapshot.forEach((docSnap) => {
+
+
       const msg = docSnap.data();
 
+
+
       const isChat =
+
         (msg.sender === currentUser.uid &&
-          msg.receiver === selectedUser.uid) ||
+         msg.receiver === selectedUser.uid)
+
+        ||
+
         (msg.sender === selectedUser.uid &&
-          msg.receiver === currentUser.uid);
+         msg.receiver === currentUser.uid);
 
-      if (!isChat) return;
 
-      // ❌ HIDE "DELETE FOR ME"
-      if (msg.deletedFor === currentUser.uid) {
+
+      if (!isChat) {
         return;
       }
 
-      // ✅ MARK AS SEEN
-      if (msg.receiver === currentUser.uid && !msg.seen) {
-        updateDoc(doc(db, "messages", docSnap.id), {
-          seen: true
-        });
-      }
+
 
       const div = document.createElement("div");
 
-      div.className =
-        msg.sender === currentUser.uid ? "myMsg" : "otherMsg";
 
-      // ⏰ TIME
-      const time = msg.time?.toDate
-        ? msg.time.toDate().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit"
-          })
-        : "";
 
-      // ✔✔ TICKS
-      let tick = "";
       if (msg.sender === currentUser.uid) {
-        tick = msg.seen ? "✔✔" : "✔";
+
+        div.className = "myMsg";
+
+      } else {
+
+        div.className = "otherMsg";
+
       }
 
+
+
+      const time = msg.time?.toDate
+
+        ? msg.time.toDate().toLocaleTimeString([], {
+
+            hour: "2-digit",
+
+            minute: "2-digit"
+
+          })
+
+        : "";
+
+
+
       div.innerHTML = `
-        <div class="msgText">${msg.text}</div>
-        <small style="font-size:10px;color:gray;">
-          ${time} ${tick}
+
+        <div class="msgText">
+
+          ${msg.text}
+
+        </div>
+
+        <small>
+
+          ${time}
+
         </small>
+
       `;
+
+
+
+      messagesDiv.appendChild(div);
+
+
+    });
+
+
+
+    // auto scroll bottom
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+
+
+  });
+
+}
 
       // 🟢 CLICK → SHOW ACTIONS
       div.addEventListener("click", (e) => {
