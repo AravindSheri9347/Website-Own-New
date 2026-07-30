@@ -46,10 +46,6 @@ onAuthStateChanged(auth, async (user) => {
   loadMessages();
 });
 
-   else {
-    window.location.href = "index.html";
-  }
-});
 
 window.goBack = function () {
   window.location.href = "home.html";
@@ -179,34 +175,54 @@ function selectUser(user) {
 }
 
 // 💬 SEND MESSAGE
-function sendMessage() {
+async function sendMsg() {
+
   const input = document.getElementById("msg");
   const message = input.value.trim();
 
-  if (message === "") return;
+  if (!message) return;
 
-  const msgBox = document.createElement("div");
-  msgBox.className = "myMsg";
-  msgBox.innerText = message;
+  if (!selectedUser) {
+    alert("Select user first");
+    return;
+  }
 
-  document.getElementById("messages").appendChild(msgBox);
+
+  await addDoc(collection(db, "messages"), {
+
+    sender: currentUser.uid,
+
+    receiver: selectedUser.uid,
+
+    text: message,
+
+    time: serverTimestamp(),
+
+    seen: false
+
+  });
+
 
   input.value = "";
 
-  document.getElementById("messages").scrollTop =
-    document.getElementById("messages").scrollHeight;
 }
+
+window.sendMsg = sendMsg;
 
 /* ENTER KEY SUPPORT */
 document.addEventListener("DOMContentLoaded", function () {
   const input = document.getElementById("msg");
 
-  input.addEventListener("keydown", function (event) {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      sendMessage();
+  input.addEventListener("keydown", function(event){
+
+    if(event.key === "Enter"){
+
+        event.preventDefault();
+
+        sendMsg();
+
     }
-  });
+});
 });
 
 // 📥 LOAD MESSAGES
@@ -445,10 +461,6 @@ window.addEventListener("DOMContentLoaded", () => {
           typing: false
         });
       }, 1500);
-    });
-
-    msgBox.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") sendMsg();
     });
 
   }
