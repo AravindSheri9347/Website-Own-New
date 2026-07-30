@@ -75,7 +75,7 @@ document.getElementById("searchInput").addEventListener("input", () => {
 });
 
 // 👉 OPEN CHAT
-function openChat(user) {
+window.openChat = function(user) {
 
   console.log("Opening chat with:", user);
 
@@ -89,8 +89,7 @@ function openChat(user) {
   );
 
   window.location.href = "chat.html";
-}
-
+};
 // 🚪 LOGOUT
 window.logout = function () {
   signOut(auth);
