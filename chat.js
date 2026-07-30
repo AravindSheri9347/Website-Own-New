@@ -39,13 +39,7 @@ onAuthStateChanged(auth, async (user) => {
 
   // ✅ show selected user name (NOT welcome)
   if (selectedUser) {
-
-  document.getElementById("chatWith").innerText =
-    selectedUser.name;
-
-  document.getElementById("chatStatus").innerText =
-    "offline";
-
+    selectUser(selectedUser);
 }
 
   // ✅ load messages
@@ -144,44 +138,58 @@ window.searchUser = function () {
 
 // 👤 SELECT USER
 function selectUser(user) {
-  selectedUser = user;
 
-  // remove old listener
-  if (unsubscribeUserStatus) unsubscribeUserStatus();
+    selectedUser = user;
 
-  // real-time status
-  unsubscribeUserStatus = onSnapshot(
-    doc(db, "users", user.uid),
-    (docSnap) => {
-      const data = docSnap.data();
-
-      let status = "";
-
-      if (data.typing) {
-        status = "✍️ Typing...";
-      } else if (data.online) {
-        status = "🟢 Online";
-      } else if (data.lastSeen) {
-        status =
-          "Last seen: " +
-          new Date(data.lastSeen).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit"
-          });
-      } else {
-        status = "Offline";
-      }
-
-      document.getElementById("chatWith").innerText =
-        data.name;
-
-
-      document.getElementById("chatStatus").innerText =
-        status;
+    if (unsubscribeUserStatus) {
+        unsubscribeUserStatus();
     }
-  );
 
-  loadMessages();
+    unsubscribeUserStatus = onSnapshot(
+        doc(db, "users", user.uid),
+        (docSnap) => {
+
+            if (!docSnap.exists()) {
+                document.getElementById("chatStatus").innerText = "Offline";
+                return;
+            }
+
+            const data = docSnap.data();
+
+            let status = "";
+
+            if (data.typing) {
+
+                status = "✍️ Typing...";
+
+            } else if (data.online) {
+
+                status = "🟢 Online";
+
+            } else if (data.lastSeen) {
+
+                const lastSeen = data.lastSeen.toDate();
+
+                status =
+                    "Last seen: " +
+                    lastSeen.toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                    });
+
+            } else {
+
+                status = "Offline";
+
+            }
+
+            document.getElementById("chatWith").innerText = data.name;
+            document.getElementById("chatStatus").innerText = status;
+
+        }
+    );
+
+    loadMessages();
 }
 
 // 💬 SEND MESSAGE
@@ -247,22 +255,7 @@ async function sendMsg() {
 
 // make it available for button click
 window.sendMsg = sendMsg;
-/* ENTER KEY SUPPORT */
-document.addEventListener("DOMContentLoaded", function () {
-  const input = document.getElementById("msg");
 
-  input.addEventListener("keydown",(e)=>{
-
-  if(e.key==="Enter"){
-
-    e.preventDefault();
-
-    sendMsg();
-
-  }
-
-});
-});
 
 // 📥 LOAD MESSAGES
 // 📥 LOAD MESSAGES
