@@ -450,15 +450,10 @@ window.logout = function () {
 window.addEventListener("DOMContentLoaded", () => {
 
   // SEND BUTTON
-  const sendBtn = document.getElementById("sendBtn");
+  const sendBtn=document.getElementById("sendBtn");
 
-  if (sendBtn) {
-
-    sendBtn.addEventListener("click", () => {
-      sendMsg();
-    });
-
-  }
+  sendBtn.addEventListener("click",sendMsg);
+};
 
 
   // ENTER KEY SEND
