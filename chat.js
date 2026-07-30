@@ -21,6 +21,7 @@ const db = getFirestore(app);
 
 let currentUser = null;
 let selectedUser = JSON.parse(localStorage.getItem("chatUser"));
+console.log("Selected User:", selectedUser);
 
 // 🔐 AUTH STATE
 onAuthStateChanged(auth, async (user) => {
@@ -446,13 +447,36 @@ window.logout = function () {
 };
 
 // ✅ DOM READY EVENTS
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded",()=>{
 
-  // 🔍 SEARCH
-  const searchBox = document.getElementById("searchInput");
-  if (searchBox) {
-    searchBox.addEventListener("input", searchUser);
+  const sendBtn = document.getElementById("sendBtn");
+
+  if(sendBtn){
+
+    sendBtn.addEventListener("click",sendMsg);
+
   }
+
+
+  const input = document.getElementById("msg");
+
+  if(input){
+
+    input.addEventListener("keydown",(e)=>{
+
+      if(e.key==="Enter"){
+
+        e.preventDefault();
+
+        sendMsg();
+
+      }
+
+    });
+
+  }
+
+});
 
   // ⌨️ MESSAGE BOX
   const msgBox = document.getElementById("msg");
