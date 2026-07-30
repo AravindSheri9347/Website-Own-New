@@ -76,7 +76,18 @@ document.getElementById("searchInput").addEventListener("input", () => {
 
 // 👉 OPEN CHAT
 function openChat(user) {
-  localStorage.setItem("chatUser", JSON.stringify(user));
+
+  console.log("Opening chat with:", user);
+
+  localStorage.setItem(
+    "chatUser",
+    JSON.stringify({
+      uid: user.uid,
+      name: user.name,
+      email: user.email
+    })
+  );
+
   window.location.href = "chat.html";
 }
 
