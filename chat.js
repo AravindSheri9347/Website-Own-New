@@ -39,11 +39,18 @@ onAuthStateChanged(auth, async (user) => {
 
   // ✅ show selected user name (NOT welcome)
   if (selectedUser) {
+
+    document.getElementById("chatWith").innerText =
+        selectedUser.name;
+
+    document.getElementById("chatStatus").innerText =
+        "offline";
+
     selectUser(selectedUser);
 }
 
-  // ✅ load messages
-  loadMessages();
+// ✅ load messages
+loadMessages();
 });
 
 
