@@ -141,6 +141,7 @@ function selectUser(user) {
 
     selectedUser = user;
 
+    // Remove old listener
     if (unsubscribeUserStatus) {
         unsubscribeUserStatus();
     }
@@ -168,11 +169,9 @@ function selectUser(user) {
 
             } else if (data.lastSeen) {
 
-                const lastSeen = data.lastSeen.toDate();
-
                 status =
                     "Last seen: " +
-                    lastSeen.toLocaleTimeString([], {
+                    data.lastSeen.toDate().toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit"
                     });
@@ -190,8 +189,8 @@ function selectUser(user) {
     );
 
     loadMessages();
-}
 
+}
 // 💬 SEND MESSAGE
 async function sendMsg() {
 
@@ -228,16 +227,22 @@ async function sendMsg() {
     await addDoc(collection(db, "messages"), {
 
       sender: currentUser.uid,
-
+  
       receiver: selectedUser.uid,
-
+  
       text: text,
-
+  
       time: serverTimestamp(),
-
-      seen: false
-
-    });
+  
+      delivered: false,
+  
+      seen: false,
+  
+      edited: false,
+  
+      deletedFor: []
+  
+  });
 
 
     // clear input after sending
@@ -283,6 +288,26 @@ function loadMessages() {
         snapshot.forEach((docSnap) => {
 
             const msg = docSnap.data();
+            // Mark delivered and seen
+            if (msg.receiver === currentUser.uid) {
+            
+                if (!msg.delivered) {
+            
+                    updateDoc(doc(db, "messages", docSnap.id), {
+                        delivered: true
+                    });
+            
+                }
+            
+                if (!msg.seen) {
+            
+                    updateDoc(doc(db, "messages", docSnap.id), {
+                        seen: true
+                    });
+            
+                }
+            
+            }
 
             // Show only current chat
             const isChat =
@@ -400,11 +425,11 @@ function loadMessages() {
 
             div.addEventListener("click", (e) => {
 
-                e.stopPropagation();
-            
-                showDeleteOptions(docSnap.id);
-            
-            });
+              e.stopPropagation();
+          
+              showMessageOptions(docSnap.id, msg);
+          
+          });
 
                 // Next step:
                 showMessageOptions(docSnap.id, msg);
@@ -427,6 +452,92 @@ function loadMessages() {
   });
 
 }
+function showMessageOptions(msgId, msg) {
+
+    // Remove existing popup
+    document.querySelectorAll(".msgMenu, .menuOverlay")
+        .forEach(e => e.remove());
+
+    // Overlay
+    const overlay = document.createElement("div");
+    overlay.className = "menuOverlay";
+
+    // Menu
+    const menu = document.createElement("div");
+    menu.className = "msgMenu";
+
+    function addItem(text, onclick) {
+
+        const item = document.createElement("div");
+
+        item.innerText = text;
+
+        item.onclick = () => {
+
+            onclick();
+
+            overlay.remove();
+            menu.remove();
+
+        };
+
+        menu.appendChild(item);
+
+    }
+
+    // Copy
+    addItem("📋 Copy", () => {
+
+        navigator.clipboard.writeText(msg.text);
+
+        alert("Copied");
+
+    });
+
+    // Edit (only sender)
+    if (msg.sender === currentUser.uid) {
+
+        addItem("✏️ Edit", () => {
+
+            editMessage(msgId, msg.text);
+
+        });
+
+    }
+
+    // Delete for Me
+    addItem("🗑 Delete for Me", () => {
+
+        deleteForMe(msgId);
+
+    });
+
+    // Delete for Everyone (only sender)
+    if (msg.sender === currentUser.uid) {
+
+        addItem("🚫 Delete for Everyone", () => {
+
+            deleteForEveryone(msgId);
+
+        });
+
+    }
+
+    // Cancel
+    addItem("❌ Cancel", () => {});
+
+    overlay.onclick = () => {
+
+        overlay.remove();
+        menu.remove();
+
+    };
+
+    document.body.appendChild(overlay);
+    document.body.appendChild(menu);
+
+}
+
 function showDeleteOptions(msgId) {
 
   // remove old elements
@@ -502,61 +613,71 @@ window.logout = function () {
 // ✅ DOM READY EVENTS
 window.addEventListener("DOMContentLoaded", () => {
 
-  // SEND BUTTON
-  const sendBtn = document.getElementById("sendBtn");
+    // SEND BUTTON
+    const sendBtn = document.getElementById("sendBtn");
 
-  if (sendBtn) {
+    if (sendBtn) {
+        sendBtn.onclick = sendMsg;   // Prevent duplicate click listeners
+    }
 
-    sendBtn.addEventListener("click", sendMsg);
+    // MESSAGE INPUT
+    const input = document.getElementById("msg");
 
-  }
+    if (!input) return;
 
+    // ENTER KEY SEND
+    input.onkeydown = (e) => {
 
-  // ENTER KEY SEND
-  const input = document.getElementById("msg");
+        if (e.key === "Enter" && !e.shiftKey) {
 
-  if (input) {
+            e.preventDefault();
 
-    input.addEventListener("keydown", (e) => {
+            sendMsg();
 
-      if (e.key === "Enter") {
+        }
 
-        e.preventDefault();
+    };
 
-        sendMsg();
-
-      }
-
-    });
-
-
+    // =========================
     // TYPING STATUS
-    let typingTimeout;
+    // =========================
+
+    let typingTimeout = null;
 
     input.addEventListener("input", async () => {
 
-      if (!selectedUser || !currentUser) return;
+        if (!currentUser || !selectedUser) return;
 
+        try {
 
-      await updateDoc(doc(db, "users", currentUser.uid), {
-        typing: true
-      });
+            await updateDoc(doc(db, "users", currentUser.uid), {
+                typing: true
+            });
 
+        } catch (err) {
 
-      clearTimeout(typingTimeout);
+            console.log(err);
 
+        }
 
-      typingTimeout = setTimeout(async () => {
+        clearTimeout(typingTimeout);
 
-        await updateDoc(doc(db, "users", currentUser.uid), {
-          typing: false
-        });
+        typingTimeout = setTimeout(async () => {
 
-      }, 1500);
+            try {
 
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    typing: false
+                });
+
+            } catch (err) {
+
+                console.log(err);
+
+            }
+
+        }, 1500);
 
     });
-
-  }
 
 });
