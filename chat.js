@@ -258,90 +258,169 @@ window.sendMsg = sendMsg;
 
 
 // 📥 LOAD MESSAGES
-// 📥 LOAD MESSAGES
 function loadMessages() {
 
-  const messagesDiv = document.getElementById("messages");
+    const messagesDiv = document.getElementById("messages");
 
-  if (!messagesDiv || !currentUser || !selectedUser) {
-    return;
-  }
+    if (!messagesDiv || !currentUser || !selectedUser) {
+        return;
+    }
 
-  // Remove previous listener
-  if (unsubscribeMessages) {
-    unsubscribeMessages();
-  }
+    // Remove previous listener
+    if (unsubscribeMessages) {
+        unsubscribeMessages();
+    }
 
-  const q = query(
-    collection(db, "messages"),
-    orderBy("time", "asc")
-  );
+    const q = query(
+        collection(db, "messages"),
+        orderBy("time", "asc")
+    );
 
-  unsubscribeMessages = onSnapshot(q, (snapshot) => {
+    unsubscribeMessages = onSnapshot(q, (snapshot) => {
 
-    messagesDiv.innerHTML = "";
+        messagesDiv.innerHTML = "";
 
-    snapshot.forEach((docSnap) => {
+        snapshot.forEach((docSnap) => {
 
-      const msg = docSnap.data();
+            const msg = docSnap.data();
 
-      // Show only messages between current user and selected user
-      const isChat =
-        (msg.sender === currentUser.uid &&
-          msg.receiver === selectedUser.uid) ||
-        (msg.sender === selectedUser.uid &&
-          msg.receiver === currentUser.uid);
+            // Show only current chat
+            const isChat =
+                (msg.sender === currentUser.uid &&
+                    msg.receiver === selectedUser.uid) ||
 
-      if (!isChat) return;
+                (msg.sender === selectedUser.uid &&
+                    msg.receiver === currentUser.uid);
 
-      // Create message div
-      const div = document.createElement("div");
+            if (!isChat) return;
 
-      div.className =
-        msg.sender === currentUser.uid ? "myMsg" : "otherMsg";
+            // Hide if deleted for me
+            if (
+                msg.deletedFor &&
+                Array.isArray(msg.deletedFor) &&
+                msg.deletedFor.includes(currentUser.uid)
+            ) {
+                return;
+            }
 
-      // Time
-      const time = msg.time?.toDate
-        ? msg.time.toDate().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit"
-          })
-        : "";
+            // ==========================
+            // DELIVERED & SEEN
+            // ==========================
 
-      // Tick
-      let tick = "";
+            if (msg.receiver === currentUser.uid) {
 
-      if (msg.sender === currentUser.uid) {
-        tick = msg.seen ? "✔✔" : "✔";
-      }
+                if (!msg.delivered) {
 
-      // Message HTML
-      div.innerHTML = `
-        <div class="msgText">${msg.text}</div>
-        <small>${time} ${tick}</small>
-      `;
+                    updateDoc(doc(db, "messages", docSnap.id), {
+                        delivered: true
+                    });
 
-      // ==========================
-      // CLICK EVENT (ADD HERE)
-      // ==========================
-      div.addEventListener("click", (e) => {
+                }
 
-        e.stopPropagation();
+                if (!msg.seen) {
 
-        alert(msg.text);
+                    updateDoc(doc(db, "messages", docSnap.id), {
+                        seen: true
+                    });
 
-        // Later you can replace alert()
-        // with Copy / Edit / Delete menu.
+                }
 
-      });
+            }
 
-      // ==========================
-      // APPEND MESSAGE
-      // ==========================
-      messagesDiv.appendChild(div);
+            // ==========================
+            // MESSAGE DIV
+            // ==========================
+
+            const div = document.createElement("div");
+
+            div.className =
+                msg.sender === currentUser.uid
+                    ? "myMsg"
+                    : "otherMsg";
+
+            // Time
+            const time = msg.time?.toDate
+                ? msg.time.toDate().toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit"
+                  })
+                : "";
+
+            // ==========================
+            // TICKS
+            // ==========================
+
+            let tick = "";
+
+            if (msg.sender === currentUser.uid) {
+
+                if (msg.seen) {
+
+                    // Green double tick
+                    tick =
+                        '<span style="color:#25D366;">✔✔</span>';
+
+                }
+                else if (msg.delivered) {
+
+                    // White double tick
+                    tick = "✔✔";
+
+                }
+                else {
+
+                    // Single tick
+                    tick = "✔";
+
+                }
+
+            }
+
+            // Edited
+            const edited =
+                msg.edited ? " (edited)" : "";
+
+            // ==========================
+            // HTML
+            // ==========================
+
+            div.innerHTML = `
+                <div class="msgText">
+                    ${msg.text}${edited}
+                </div>
+
+                <small>
+                    ${time} ${tick}
+                </small>
+            `;
+
+            // ==========================
+            // CLICK
+            // ==========================
+
+            div.addEventListener("click", (e) => {
+
+                e.stopPropagation();
+            
+                showDeleteOptions(docSnap.id);
+            
+            });
+
+                // Next step:
+                showMessageOptions(docSnap.id, msg);
+
+            });
+
+            messagesDiv.appendChild(div);
+
+        });
+
+        messagesDiv.scrollTop =
+            messagesDiv.scrollHeight;
 
     });
 
+}
     // Auto scroll
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
