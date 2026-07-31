@@ -1,7 +1,7 @@
 import { 
-  getFirestore, collection, getDocs, addDoc, 
-  serverTimestamp, onSnapshot, doc, getDoc,
-  query, orderBy, updateDoc, deleteDoc   // ✅ ADD deleteDoc
+getFirestore, collection, getDocs, addDoc, 
+serverTimestamp, onSnapshot, doc, getDoc,
+query, orderBy, updateDoc, deleteDoc   // ✅ ADD deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 
@@ -25,126 +25,167 @@ console.log("Selected User:", selectedUser);
 
 // 🔐 AUTH STATE
 onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    window.location.href = "index.html";
-    return;
-  }
+if (!user) {
+window.location.href = "index.html";
+return;
+}
 
-  currentUser = user;
+currentUser = user;
 
-  // ✅ set online
-  await updateDoc(doc(db, "users", user.uid), {
-    online: true
-  });
+// ✅ set online
+await updateDoc(doc(db, "users", user.uid), {
+online: true
+});
 
-  // ✅ show selected user name (NOT welcome)
-  if (selectedUser) {
+// ✅ show selected user name (NOT welcome)
+if (selectedUser) {
+
+  document.getElementById("chatWith").innerText =
+    selectedUser.name;
+
+  document.getElementById("chatStatus").innerText =
+    "offline";
+
     selectUser(selectedUser);
 }
 
-  // ✅ load messages
-  loadMessages();
+// ✅ load messages
+loadMessages();
 });
 
 
 window.goBack = function () {
-  window.location.href = "home.html";
+window.location.href = "home.html";
 };
 
 // 🔴 OFFLINE STATUS
 // 🔴 BETTER OFFLINE STATUS
 document.addEventListener("visibilitychange", async () => {
-  if (!currentUser) return;
+if (!currentUser) return;
 
-  if (document.visibilityState === "hidden") {
-    await updateDoc(doc(db, "users", currentUser.uid), {
-      online: false,
-      lastSeen: serverTimestamp()
-    });
-  } else {
-    await updateDoc(doc(db, "users", currentUser.uid), {
-      online: true
-    });
-  }
+if (document.visibilityState === "hidden") {
+await updateDoc(doc(db, "users", currentUser.uid), {
+online: false,
+lastSeen: serverTimestamp()
+});
+} else {
+await updateDoc(doc(db, "users", currentUser.uid), {
+online: true
+});
+}
 });
 
 window.addEventListener("beforeunload", async () => {
-  if (currentUser) {
-    await updateDoc(doc(db, "users", currentUser.uid), {
-      online: false,
-      lastSeen: serverTimestamp()
-    });
-  }
+if (currentUser) {
+await updateDoc(doc(db, "users", currentUser.uid), {
+online: false,
+lastSeen: serverTimestamp()
+});
+}
 });
 
 // 🔍 LOAD USERS
 async function loadUsers() {
-  const snapshot = await getDocs(collection(db, "users"));
+const snapshot = await getDocs(collection(db, "users"));
 
-  allUsers = [];
+allUsers = [];
 
-  snapshot.forEach(docSnap => {
-    const data = docSnap.data();
+snapshot.forEach(docSnap => {
+const data = docSnap.data();
 
-    if (data.uid !== currentUser.uid) {
-      if (data.name && data.email) {
-        allUsers.push(data);
-      }
-    }
-  });
+if (data.uid !== currentUser.uid) {
+if (data.name && data.email) {
+allUsers.push(data);
+}
+}
+});
 
-  console.log("Loaded Users:", allUsers);
+console.log("Loaded Users:", allUsers);
 
-  displayUsers(allUsers); // ✅ show users
+displayUsers(allUsers); // ✅ show users
 }
 
 // 📋 DISPLAY USERS
 function displayUsers(users) {
-  const userList = document.getElementById("userList");
-  userList.innerHTML = "";
+const userList = document.getElementById("userList");
+userList.innerHTML = "";
 
-  if (users.length === 0) {
-    userList.innerHTML = "<p style='color:red;'>No user found</p>";
-    return;
-  }
+if (users.length === 0) {
+userList.innerHTML = "<p style='color:red;'>No user found</p>";
+return;
+}
 
-  users.forEach(user => {
-    const div = document.createElement("div");
-    div.innerText = `${user.name} (${user.email})`;
-    div.onclick = () => selectUser(user);
-    userList.appendChild(div);
-  });
+users.forEach(user => {
+const div = document.createElement("div");
+div.innerText = `${user.name} (${user.email})`;
+div.onclick = () => selectUser(user);
+userList.appendChild(div);
+});
 }
 
 // 🔍 SEARCH USER
 window.searchUser = function () {
-  const value = document
-    .getElementById("searchInput")
-    .value.toLowerCase()
-    .trim();
+const value = document
+.getElementById("searchInput")
+.value.toLowerCase()
+.trim();
 
-  if (!value) {
-    displayUsers(allUsers); // ✅ show all again
-    return;
-  }
+if (!value) {
+displayUsers(allUsers); // ✅ show all again
+return;
+}
 
-  const filtered = allUsers.filter(user =>
-    user.name.toLowerCase().includes(value) ||
-    user.email.toLowerCase().includes(value)
-  );
+const filtered = allUsers.filter(user =>
+user.name.toLowerCase().includes(value) ||
+user.email.toLowerCase().includes(value)
+);
 
-  displayUsers(filtered);
+displayUsers(filtered);
 };
 
 // 👤 SELECT USER
 function selectUser(user) {
+  selectedUser = user;
+
+  // remove old listener
+  if (unsubscribeUserStatus) unsubscribeUserStatus();
+
+  // real-time status
+  unsubscribeUserStatus = onSnapshot(
+    doc(db, "users", user.uid),
+    (docSnap) => {
+      const data = docSnap.data();
+
+      let status = "";
+
+      if (data.typing) {
+        status = "✍️ Typing...";
+      } else if (data.online) {
+        status = "🟢 Online";
+      } else if (data.lastSeen) {
+        status =
+          "Last seen: " +
+          new Date(data.lastSeen).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
+          });
+      } else {
+        status = "Offline";
+      }
+
+      document.getElementById("chatWith").innerText =
+        data.name;
 
     selectedUser = user;
 
+      document.getElementById("chatStatus").innerText =
+        status;
     if (unsubscribeUserStatus) {
         unsubscribeUserStatus();
-    }
+}
+  );
 
+  loadMessages();
     unsubscribeUserStatus = onSnapshot(
         doc(db, "users", user.uid),
         (docSnap) => {
@@ -195,368 +236,304 @@ function selectUser(user) {
 // 💬 SEND MESSAGE
 async function sendMsg() {
 
-  const input = document.getElementById("msg");
+const input = document.getElementById("msg");
 
-  if (!input) {
-    console.log("Message input not found");
-    return;
-  }
-
-
-  const text = input.value.trim();
+if (!input) {
+console.log("Message input not found");
+return;
+}
 
 
-  if (text === "") {
-    return;
-  }
+const text = input.value.trim();
 
 
-  if (!currentUser) {
-    console.log("Current user not loaded");
-    return;
-  }
+if (text === "") {
+return;
+}
 
 
-  if (!selectedUser) {
-    alert("Select a user first");
-    return;
-  }
+if (!currentUser) {
+console.log("Current user not loaded");
+return;
+}
 
 
-  try {
-
-    await addDoc(collection(db, "messages"), {
-
-      sender: currentUser.uid,
-
-      receiver: selectedUser.uid,
-
-      text: text,
-
-      time: serverTimestamp(),
-
-      seen: false
-
-    });
+if (!selectedUser) {
+alert("Select a user first");
+return;
+}
 
 
-    // clear input after sending
-    input.value = "";
+try {
+
+await addDoc(collection(db, "messages"), {
+
+sender: currentUser.uid,
+
+receiver: selectedUser.uid,
+
+text: text,
+
+time: serverTimestamp(),
+
+seen: false
+
+});
 
 
-  } catch (error) {
+// clear input after sending
+input.value = "";
 
-    console.error("Send message error:", error);
 
-  }
+} catch (error) {
+
+console.error("Send message error:", error);
+
+}
 
 }
 
 
 // make it available for button click
 window.sendMsg = sendMsg;
+/* ENTER KEY SUPPORT */
+document.addEventListener("DOMContentLoaded", function () {
+  const input = document.getElementById("msg");
 
+  input.addEventListener("keydown",(e)=>{
 
+  if(e.key==="Enter"){
+
+    e.preventDefault();
+
+    sendMsg();
+
+  }
+
+});
+});
+
+// 📥 LOAD MESSAGES
 // 📥 LOAD MESSAGES
 function loadMessages() {
 
-    const messagesDiv = document.getElementById("messages");
+const messagesDiv = document.getElementById("messages");
 
-    if (!messagesDiv || !currentUser || !selectedUser) {
-        return;
-    }
-
-    // Remove previous listener
-    if (unsubscribeMessages) {
-        unsubscribeMessages();
-    }
-
-    const q = query(
-        collection(db, "messages"),
-        orderBy("time", "asc")
-    );
-
-    unsubscribeMessages = onSnapshot(q, (snapshot) => {
-
-        messagesDiv.innerHTML = "";
-
-        snapshot.forEach((docSnap) => {
-
-            const msg = docSnap.data();
-
-            // Show only current chat
-            const isChat =
-                (msg.sender === currentUser.uid &&
-                    msg.receiver === selectedUser.uid) ||
-
-                (msg.sender === selectedUser.uid &&
-                    msg.receiver === currentUser.uid);
-
-            if (!isChat) return;
-
-            // Hide if deleted for me
-            if (
-                msg.deletedFor &&
-                Array.isArray(msg.deletedFor) &&
-                msg.deletedFor.includes(currentUser.uid)
-            ) {
-                return;
-            }
-
-            // ==========================
-            // DELIVERED & SEEN
-            // ==========================
-
-            if (msg.receiver === currentUser.uid) {
-
-                if (!msg.delivered) {
-
-                    updateDoc(doc(db, "messages", docSnap.id), {
-                        delivered: true
-                    });
-
-                }
-
-                if (!msg.seen) {
-
-                    updateDoc(doc(db, "messages", docSnap.id), {
-                        seen: true
-                    });
-
-                }
-
-            }
-
-            // ==========================
-            // MESSAGE DIV
-            // ==========================
-
-            const div = document.createElement("div");
-
-            div.className =
-                msg.sender === currentUser.uid
-                    ? "myMsg"
-                    : "otherMsg";
-
-            // Time
-            const time = msg.time?.toDate
-                ? msg.time.toDate().toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit"
-                  })
-                : "";
-
-            // ==========================
-            // TICKS
-            // ==========================
-
-            let tick = "";
-
-            if (msg.sender === currentUser.uid) {
-
-                if (msg.seen) {
-
-                    // Green double tick
-                    tick =
-                        '<span style="color:#25D366;">✔✔</span>';
-
-                }
-                else if (msg.delivered) {
-
-                    // White double tick
-                    tick = "✔✔";
-
-                }
-                else {
-
-                    // Single tick
-                    tick = "✔";
-
-                }
-
-            }
-
-            // Edited
-            const edited =
-                msg.edited ? " (edited)" : "";
-
-            // ==========================
-            // HTML
-            // ==========================
-
-            div.innerHTML = `
-                <div class="msgText">
-                    ${msg.text}${edited}
-                </div>
-
-                <small>
-                    ${time} ${tick}
-                </small>
-            `;
-
-            // ==========================
-            // CLICK
-            // ==========================
-
-            div.addEventListener("click", (e) => {
-
-                e.stopPropagation();
-            
-                showDeleteOptions(docSnap.id);
-            
-            });
-
-                // Next step:
-                showMessageOptions(docSnap.id, msg);
-
-            });
-
-            messagesDiv.appendChild(div);
-
-        });
-
-        messagesDiv.scrollTop =
-            messagesDiv.scrollHeight;
-
-    });
-
+if (!messagesDiv || !currentUser || !selectedUser) {
+return;
 }
-    // Auto scroll
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
-  });
+// Remove previous listener
+if (unsubscribeMessages) {
+unsubscribeMessages();
+}
+
+const q = query(
+collection(db, "messages"),
+orderBy("time", "asc")
+);
+
+unsubscribeMessages = onSnapshot(q, (snapshot) => {
+
+messagesDiv.innerHTML = "";
+
+snapshot.forEach((docSnap) => {
+
+const msg = docSnap.data();
+
+// Show only messages between current user and selected user
+const isChat =
+(msg.sender === currentUser.uid &&
+msg.receiver === selectedUser.uid) ||
+(msg.sender === selectedUser.uid &&
+msg.receiver === currentUser.uid);
+
+if (!isChat) return;
+
+// Create message div
+const div = document.createElement("div");
+
+div.className =
+msg.sender === currentUser.uid ? "myMsg" : "otherMsg";
+
+// Time
+const time = msg.time?.toDate
+? msg.time.toDate().toLocaleTimeString([], {
+hour: "2-digit",
+minute: "2-digit"
+})
+: "";
+
+// Tick
+let tick = "";
+
+if (msg.sender === currentUser.uid) {
+tick = msg.seen ? "✔✔" : "✔";
+}
+
+// Message HTML
+div.innerHTML = `
+       <div class="msgText">${msg.text}</div>
+       <small>${time} ${tick}</small>
+     `;
+
+// ==========================
+// CLICK EVENT (ADD HERE)
+// ==========================
+div.addEventListener("click", (e) => {
+
+e.stopPropagation();
+
+alert(msg.text);
+
+// Later you can replace alert()
+// with Copy / Edit / Delete menu.
+
+});
+
+// ==========================
+// APPEND MESSAGE
+// ==========================
+messagesDiv.appendChild(div);
+
+});
+
+// Auto scroll
+messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+});
 
 }
 function showDeleteOptions(msgId) {
 
-  // remove old elements
-  document.querySelectorAll(".deleteBox, .deleteOverlay").forEach(e => e.remove());
+// remove old elements
+document.querySelectorAll(".deleteBox, .deleteOverlay").forEach(e => e.remove());
 
-  // overlay
-  const overlay = document.createElement("div");
-  overlay.className = "deleteOverlay";
+// overlay
+const overlay = document.createElement("div");
+overlay.className = "deleteOverlay";
 
-  overlay.onclick = () => {
-    overlay.remove();
-    box.remove();
-  };
+overlay.onclick = () => {
+overlay.remove();
+box.remove();
+};
 
-  // box
-  const box = document.createElement("div");
-  box.className = "deleteBox";
+// box
+const box = document.createElement("div");
+box.className = "deleteBox";
 
-  // delete for me
-  const delMe = document.createElement("div");
-  delMe.innerText = "Delete for Me";
-  delMe.className = "me";
-  delMe.onclick = () => deleteForMe(msgId);
+// delete for me
+const delMe = document.createElement("div");
+delMe.innerText = "Delete for Me";
+delMe.className = "me";
+delMe.onclick = () => deleteForMe(msgId);
 
-  // delete for everyone
-  const delEveryone = document.createElement("div");
-  delEveryone.innerText = "Delete for Everyone";
-  delEveryone.className = "everyone";
-  delEveryone.onclick = () => deleteForEveryone(msgId);
+// delete for everyone
+const delEveryone = document.createElement("div");
+delEveryone.innerText = "Delete for Everyone";
+delEveryone.className = "everyone";
+delEveryone.onclick = () => deleteForEveryone(msgId);
 
-  // cancel
-  const cancel = document.createElement("div");
-  cancel.innerText = "Cancel";
-  cancel.className = "cancel";
-  cancel.onclick = () => {
-    overlay.remove();
-    box.remove();
-  };
+// cancel
+const cancel = document.createElement("div");
+cancel.innerText = "Cancel";
+cancel.className = "cancel";
+cancel.onclick = () => {
+overlay.remove();
+box.remove();
+};
 
-  box.appendChild(delMe);
-  box.appendChild(delEveryone);
-  box.appendChild(cancel);
+box.appendChild(delMe);
+box.appendChild(delEveryone);
+box.appendChild(cancel);
 
-  document.body.appendChild(overlay);
-  document.body.appendChild(box);
+document.body.appendChild(overlay);
+document.body.appendChild(box);
 }
 
 
 // ✅ DELETE FOR ME (HIDE MESSAGE)
 window.deleteForMe = async function (id) {
-  await updateDoc(doc(db, "messages", id), {
-    deletedFor: currentUser.uid
-  });
+await updateDoc(doc(db, "messages", id), {
+deletedFor: currentUser.uid
+});
 
-  document.querySelectorAll(".deleteBox, .deleteOverlay").forEach(e => e.remove());
+document.querySelectorAll(".deleteBox, .deleteOverlay").forEach(e => e.remove());
 };
 
 
 // ✅ DELETE FOR EVERYONE
 window.deleteForEveryone = async function (id) {
-  await updateDoc(doc(db, "messages", id), {
-    text: "🚫 Message deleted"
-  });
+await updateDoc(doc(db, "messages", id), {
+text: "🚫 Message deleted"
+});
 
-  document.querySelectorAll(".deleteBox, .deleteOverlay").forEach(e => e.remove());
+document.querySelectorAll(".deleteBox, .deleteOverlay").forEach(e => e.remove());
 };
 // 🚪 LOGOUT
 window.logout = function () {
-  auth.signOut();
-  window.location.href = "index.html";
+auth.signOut();
+window.location.href = "index.html";
 };
 
 // ✅ DOM READY EVENTS
 window.addEventListener("DOMContentLoaded", () => {
 
-  // SEND BUTTON
-  const sendBtn = document.getElementById("sendBtn");
+// SEND BUTTON
+const sendBtn = document.getElementById("sendBtn");
 
-  if (sendBtn) {
+if (sendBtn) {
 
-    sendBtn.addEventListener("click", sendMsg);
+sendBtn.addEventListener("click", sendMsg);
 
-  }
-
-
-  // ENTER KEY SEND
-  const input = document.getElementById("msg");
-
-  if (input) {
-
-    input.addEventListener("keydown", (e) => {
-
-      if (e.key === "Enter") {
-
-        e.preventDefault();
-
-        sendMsg();
-
-      }
-
-    });
+}
 
 
-    // TYPING STATUS
-    let typingTimeout;
+// ENTER KEY SEND
+const input = document.getElementById("msg");
 
-    input.addEventListener("input", async () => {
+if (input) {
 
-      if (!selectedUser || !currentUser) return;
+input.addEventListener("keydown", (e) => {
 
+if (e.key === "Enter") {
 
-      await updateDoc(doc(db, "users", currentUser.uid), {
-        typing: true
-      });
+e.preventDefault();
 
+sendMsg();
 
-      clearTimeout(typingTimeout);
+}
 
-
-      typingTimeout = setTimeout(async () => {
-
-        await updateDoc(doc(db, "users", currentUser.uid), {
-          typing: false
-        });
-
-      }, 1500);
+});
 
 
-    });
+// TYPING STATUS
+let typingTimeout;
 
-  }
+input.addEventListener("input", async () => {
+
+if (!selectedUser || !currentUser) return;
+
+
+await updateDoc(doc(db, "users", currentUser.uid), {
+typing: true
+});
+
+
+clearTimeout(typingTimeout);
+
+
+typingTimeout = setTimeout(async () => {
+
+await updateDoc(doc(db, "users", currentUser.uid), {
+typing: false
+});
+
+}, 1500);
+
+
+});
+
+}
 
 });
